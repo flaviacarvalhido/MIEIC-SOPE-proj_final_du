@@ -6,19 +6,35 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <time.h>
+#include <signal.h>
 #include "log.h"
+
+void sigint_handler(int sigint);
 
 int countSubDirectories(char* directory);
 int countSubDirectoriesRecursive(char* directory);
+double getExecTime(clock_t begin);
+void resetSIGINT();
 
+int receivedSIGINT;
 
 int main(void){
+    double time_spent;
+    clock_t begin = clock();
+
+    signal(SIGINT, sigint_handler);
 
     printf("Found: %d subdirectories\n", countSubDirectoriesRecursive("."));
 
+    time_spent = getExecTime(begin);
+    printf("TIME: %f\n", time_spent);
+
+    printf("Received SIGINT: %d\n", receivedSIGINT);
+
+
     return 0;
 }
-
 
 // Auxiliary Functions to be placed elsewhere
 
@@ -104,4 +120,21 @@ int countSubDirectoriesRecursive(char* directory){
 
     closedir(source_dir);
     return counter;
+}
+
+// Gets elapsed time since start of program
+double getExecTime(clock_t begin){
+    clock_t end = clock();
+    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+}
+
+
+void sigint_handler(int sigint)
+{
+  if (sigint == SIGINT)
+    receivedSIGINT = 1;
+}
+
+void resetSIGINT(){
+    receivedSIGINT = 0;
 }

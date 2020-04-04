@@ -1,0 +1,4 @@
+1. Dar cd para a pasta do repositório
+2. Escrever "make" na consola
+3. Executar o executável 'proj'
+4. Remover ficheiros .o e o executável 'proj' com comando "make clean"

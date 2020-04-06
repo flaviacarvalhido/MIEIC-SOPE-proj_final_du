@@ -20,12 +20,11 @@ double getExecTime(clock_t begin);
 void resetSIGINT();
 int calculateBlocks(int size, int block_size);
 void simpleduPrototype(char* directory);
+off_t getDirSize(char* directory);
 
 int receivedSIGINT;
 
 int main(int argc, char *argv[], char *envp[]){
-
-    // Du function itself
 
     char directory[50] = "./Test";
 
@@ -45,8 +44,9 @@ void simpleduPrototype(char* directory){
 
     DIR* source_dir = opendir(directory);
 
+
     if (source_dir == NULL)  // opendir returns NULL if couldn't open directory
-        return;
+    return;
 
     while ((dentry = readdir(source_dir)) != NULL){
 
@@ -62,10 +62,46 @@ void simpleduPrototype(char* directory){
         }
 
         if(S_ISDIR(statbuf.st_mode)){
-            //simpleduPrototype(dentry->d_name);
-            printf("%d\t%s\n", calculateBlocks(statbuf.st_size, 1024), dentry->d_name);
+            long int temp = getDirSize(dentry->d_name);
+            printf("TEMP: %ld\n", temp);
+            printf("%d\t%s\n", calculateBlocks(temp, 1024), dentry->d_name);
         }
     }
+}
+
+
+off_t getDirSize(char* directory){
+
+    off_t directory_size = 0;
+    DIR *pDir;
+
+    if ((pDir = opendir(directory)) != NULL)
+    {
+        struct dirent *pDirent;
+
+        while ( (pDirent = readdir(pDir)) != NULL)
+        {
+            char buffer[PATH_MAX + 1];
+            strcat(strcat(strcpy(buffer, directory), "/"), pDirent->d_name);
+            struct stat file_stat;
+            if (stat(buffer, &file_stat) == 0)
+            {
+                directory_size += file_stat.st_blocks * S_BLKSIZE;
+            }
+
+            if (pDirent->d_type == DT_DIR)
+            {
+                if ( strcmp(pDirent->d_name, ".") != 0 && strcmp(pDirent->d_name, "..") != 0)
+                {
+                    directory_size += getDirSize(buffer);
+                }
+            }
+        }
+
+        closedir(pDir);
+    }
+
+    return directory_size;
 }
 
 // Gets size in blocks of 1024
@@ -162,7 +198,6 @@ double getExecTime(clock_t begin){
     clock_t end = clock();
     double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 }
-
 
 void sigint_handler(int sigint)
 {

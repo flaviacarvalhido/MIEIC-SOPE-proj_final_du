@@ -25,10 +25,14 @@ struct arg parser(int argc, char *argv[]){
             i++;
             args.isBSize=true;
 
-            if(isdigit(argv[i])==0){
+
+            if(atoi(argv[i])){
                 args.size=atoi(argv[i]);
+                printf("i worked\n");
             }else{
                 args.error=true;
+                printf("error\n");
+                return args;
             }
 
             

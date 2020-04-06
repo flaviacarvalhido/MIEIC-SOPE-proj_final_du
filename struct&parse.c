@@ -23,8 +23,18 @@ struct arg
 };
 
 
-int parser(char *argv[]){
+struct arg parser(int argc, char *argv[]){
     
+    struct arg args;
 
-    return 0;
+
+    for(unsigned int i=2;i<=argc-1;i++){
+
+
+
+
+    }
+
+
+    return args;
 }

@@ -4,13 +4,12 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
-#include <sys/stat.h>
 #include <fcntl.h>
 #include <time.h>
 #include <signal.h>
 #include "log.h"
 #include <stdbool.h>
-#include <string.h>
+#include <stdlib.h>
 
 struct arg
 {
@@ -36,6 +35,7 @@ struct arg parser(int argc, char *argv[]){
 
         if(argv[i]=="-a"){
             args.isA=true;
+            printf("yes I work");
             continue;
         }
         if(argv[i]=="-b"){
@@ -58,7 +58,7 @@ struct arg parser(int argc, char *argv[]){
         }
         if(strstr(argv[i], "--max-depth=") != NULL){
             args.isMax=true;
-            strncpy(temp, argv[i]+12, length(argv[i])-12);
+            strncpy(temp, argv[i]+12, strlen(argv[i])-12);
             args.depth=atoi(temp);
             continue;
         }

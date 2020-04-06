@@ -60,6 +60,7 @@ void simpleduPrototype(char* directory){
         }
 
         if(S_ISDIR(statbuf.st_mode)){
+            simpleduPrototype(dentry->d_name);
             printf("%d\t%s\n", calculateBlocks(statbuf.st_size, 1024), dentry->d_name);
         }
     }

@@ -20,7 +20,7 @@ double getExecTime(clock_t begin);
 void resetSIGINT();
 int calculateBlocks(int size, int block_size);
 void simpleduPrototype(char* directory);
-off_t getDirSize(char* directory);
+int getDirSize(char* directory);
 
 int receivedSIGINT;
 
@@ -62,17 +62,17 @@ void simpleduPrototype(char* directory){
         }
 
         if(S_ISDIR(statbuf.st_mode)){
-            long int temp = getDirSize(dentry->d_name);
-            printf("TEMP: %ld\n", temp);
+            int temp = getDirSize(dentry->d_name);
+            printf("TEMP: %d\n", temp);
             printf("%d\t%s\n", calculateBlocks(temp, 1024), dentry->d_name);
         }
     }
 }
 
 
-off_t getDirSize(char* directory){
+int getDirSize(char* directory){
 
-    off_t directory_size = 0;
+    int directory_size = 0;
     DIR *pDir;
 
     if ((pDir = opendir(directory)) != NULL)
@@ -84,14 +84,15 @@ off_t getDirSize(char* directory){
             char buffer[PATH_MAX + 1];
             strcat(strcat(strcpy(buffer, directory), "/"), pDirent->d_name);
             struct stat file_stat;
-            if (stat(buffer, &file_stat) == 0)
-            {
-                directory_size += file_stat.st_blocks * S_BLKSIZE;
+            if (stat(buffer, &file_stat) == 0){
+                directory_size += file_stat.st_size;
+                printf("DIRECTORY: %s\n", pDirent->d_name);
+                printf("DIRECTORY SIZE: %d\n", directory_size);
             }
 
             if (pDirent->d_type == DT_DIR)
             {
-                if ( strcmp(pDirent->d_name, ".") != 0 && strcmp(pDirent->d_name, "..") != 0)
+                if ( strcmp(pDirent->d_name, ".") && strcmp(pDirent->d_name, "..") )
                 {
                     directory_size += getDirSize(buffer);
                 }

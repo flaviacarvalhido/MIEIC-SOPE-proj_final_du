@@ -20,18 +20,12 @@ void resetSIGINT();
 int receivedSIGINT;
 
 int main(int argc, char *argv[], char *envp[]){
-    double time_spent;
-    clock_t begin = clock();
 
-    signal(SIGINT, sigint_handler);
+    // Du function itself
 
-    printf("Found: %d subdirectories\n", countSubDirectoriesRecursive("."));
+    char directory[50] = ".";
 
-    time_spent = getExecTime(begin);
-    printf("TIME: %f\n", time_spent);
-
-    printf("Received SIGINT: %d\n", receivedSIGINT);
-
+    printf("%s\n", directory);
 
     return 0;
 }

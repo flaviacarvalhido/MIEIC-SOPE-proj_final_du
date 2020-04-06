@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <time.h>
 #include <signal.h>
+#include <limits.h>
 #include "log.h"
 
 void sigint_handler(int sigint);
@@ -16,6 +17,8 @@ int countSubDirectories(char* directory);
 int countSubDirectoriesRecursive(char* directory);
 double getExecTime(clock_t begin);
 void resetSIGINT();
+int calculateBlocks(int size, int block_size);
+void simpleduPrototype(char* directory);
 
 int receivedSIGINT;
 
@@ -25,12 +28,47 @@ int main(int argc, char *argv[], char *envp[]){
 
     char directory[50] = ".";
 
-    printf("%s\n", directory);
+    simpleduPrototype(directory);
 
     return 0;
 }
 
 // Auxiliary Functions to be placed elsewhere
+
+void simpleduPrototype(char* directory){
+    struct stat statbuf;
+    int fd;
+
+    struct dirent* dentry;
+
+    DIR* source_dir = opendir(directory);
+
+    if (source_dir == NULL)  // opendir returns NULL if couldn't open directory
+        return;
+
+    while ((dentry = readdir(source_dir)) != NULL){
+
+        if(strcmp(dentry->d_name, "..") == 0)
+        continue;
+
+        fd = dirfd(source_dir); // Transforms directory into a file descriptor
+
+        // Lê informações para o statbuf
+        if(fstatat(fd, dentry->d_name, &statbuf, 0) < 0){
+            perror("Could not read info");
+            continue;
+        }
+
+        if(S_ISDIR(statbuf.st_mode)){
+            printf("%d\t%s\n", calculateBlocks(statbuf.st_size, 1024), dentry->d_name);
+        }
+    }
+}
+
+// Gets size in blocks of 1024
+int calculateBlocks(int size, int block_size){
+    return size / block_size;
+}
 
 // Counts subdirectories on the first level
 int countSubDirectories(char* directory){
@@ -51,9 +89,9 @@ int countSubDirectories(char* directory){
 
         // Ignora o diretório atual e o diretório pai
         if(strcmp(dentry->d_name, ".") == 0)
-            continue;
+        continue;
         if(strcmp(dentry->d_name, "..") == 0)
-            continue;
+        continue;
 
         fd = dirfd(source_dir); // Transforms directory into a file descriptor
 
@@ -64,7 +102,7 @@ int countSubDirectories(char* directory){
         }
 
         if(S_ISDIR(statbuf.st_mode))
-            counter++;
+        counter++;
     }
 
     closedir(source_dir);
@@ -90,12 +128,12 @@ int countSubDirectoriesRecursive(char* directory){
 
         // Ignora o diretório atual e o diretório pai
         if(strcmp(dentry->d_name, ".") == 0)
-            continue;
+        continue;
         if(strcmp(dentry->d_name, "..") == 0)
-            continue;
-            // Testing purposes
+        continue;
+        // Testing purposes
         if(strcmp(dentry->d_name, ".git") == 0)
-                continue;
+        continue;
 
         fd = dirfd(source_dir); // Transforms directory into a file descriptor
 
@@ -125,7 +163,7 @@ double getExecTime(clock_t begin){
 
 void sigint_handler(int sigint)
 {
-  if (sigint == SIGINT)
+    if (sigint == SIGINT)
     receivedSIGINT = 1;
 }
 

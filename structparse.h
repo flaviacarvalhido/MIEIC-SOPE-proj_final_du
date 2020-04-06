@@ -25,6 +25,7 @@ struct arg
     bool isS;
     bool isMax;
     int depth;
+    bool error;
 };
 
 struct arg parser(int argc, char *argv[]);

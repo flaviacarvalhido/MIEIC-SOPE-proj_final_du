@@ -29,6 +29,8 @@ int main(int argc, char *argv[], char *envp[]){
 
     char directory[50] = "./Test";
 
+    parser(argc,argv);
+
     //simpleduPrototype(directory);
 
     return 0;

@@ -9,29 +9,38 @@ struct arg parser(int argc, char *argv[]){
 
     for(unsigned int i=2;i<=argc-1;i++){
 
-        if(argv[i]=="-a"){
+        printf("entered for \n");
+
+        if(strcmp(argv[i],"-a")==0){
             args.isA=true;
             printf("yes I work\n");
             continue;
         }
-        if(argv[i]=="-b"){
+        if(strcmp(argv[i],"-b")==0){
             args.isB=true;
             printf("yes I work\n");
             continue;
         }
-        if(argv[i]=="-B" && argv[i+1]=="size"){
+        if(strcmp(argv[i],"-B") ==0){
             i++;
             args.isBSize=true;
-            args.size=atoi(argv[i]);
+
+            if(isdigit(argv[i])==0){
+                args.size=atoi(argv[i]);
+            }else{
+                args.error=true;
+            }
+
+            
             printf("yes I work\n");
             continue;
         }
-        if(argv[i]=="-L"){
+        if(strcmp(argv[i],"-L")==0){
             args.isL=true;
             printf("yes I work\n");
             continue;
         }
-        if(argv[i]=="-S"){
+        if(strcmp(argv[i],"-S")==0){
             args.isS=true;
             printf("yes I work\n");
             continue;
@@ -49,6 +58,9 @@ struct arg parser(int argc, char *argv[]){
 
     }
 
+    if(args.path == NULL){
+        args.path=".";
+    }
 
     return args;
 }

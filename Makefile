@@ -7,7 +7,7 @@ proj.o: proj.c
 log.o: log.c log.h
 	gcc -c log.c
 
-struct&parse.o: structparse.c
+structparse.o: structparse.c
 	gcc -c structparse.c
 
 

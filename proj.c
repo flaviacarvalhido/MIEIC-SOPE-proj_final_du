@@ -10,6 +10,7 @@
 #include <signal.h>
 #include <limits.h>
 #include "log.h"
+#include "structparse.h"
 
 void sigint_handler(int sigint);
 
@@ -29,6 +30,7 @@ int main(int argc, char *argv[], char *envp[]){
     char directory[50] = "./Test";
 
     simpleduPrototype(directory);
+    parser(argc,argv);
 
     return 0;
 }

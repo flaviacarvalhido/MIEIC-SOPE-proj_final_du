@@ -1,3 +1,4 @@
+#pragma once
 #include <stdio.h>
 #include <dirent.h>
 #include <sys/types.h>
@@ -28,7 +29,7 @@ struct arg
 
 
 struct arg parser(int argc, char *argv[]){
-    
+
     struct arg args;
     char *temp;
 
@@ -62,7 +63,7 @@ struct arg parser(int argc, char *argv[]){
             args.depth=atoi(temp);
             continue;
         }
-        
+
         args.isPath=true;
         args.path=argv[i];
 

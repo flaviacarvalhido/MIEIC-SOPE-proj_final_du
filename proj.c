@@ -26,13 +26,10 @@ int receivedSIGINT;
 int main(int argc, char *argv[], char *envp[]){
 
     // Du function itself
-    //a
 
-    char directory[50] = ".";
+    char directory[50] = "./Test";
 
-    parser(argc,argv);
-
-    simpleduPrototype(directory);
+    //simpleduPrototype(directory);
 
     return 0;
 }
@@ -64,7 +61,7 @@ void simpleduPrototype(char* directory){
         }
 
         if(S_ISDIR(statbuf.st_mode)){
-            simpleduPrototype(dentry->d_name);
+            //simpleduPrototype(dentry->d_name);
             printf("%d\t%s\n", calculateBlocks(statbuf.st_size, 1024), dentry->d_name);
         }
     }

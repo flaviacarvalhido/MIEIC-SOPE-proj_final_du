@@ -19,7 +19,7 @@ void resetSIGINT();
 
 int receivedSIGINT;
 
-int main(void){
+int main(int argc, char *argv[], char *envp[]){
     double time_spent;
     clock_t begin = clock();
 

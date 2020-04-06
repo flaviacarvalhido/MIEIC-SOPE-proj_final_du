@@ -25,6 +25,7 @@ int receivedSIGINT;
 int main(int argc, char *argv[], char *envp[]){
 
     // Du function itself
+    //a
 
     char directory[50] = ".";
 

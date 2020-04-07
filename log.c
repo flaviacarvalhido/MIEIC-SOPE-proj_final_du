@@ -9,7 +9,7 @@ int writeLog(double instant, pid_t pid, action_type action){
     if(directory == NULL)
         directory = "log.txt";
 
-    if( (fd = open(directory, O_WRONLY)) == -1){ // Mudar o .txt para o sítio apropriado
+    if( (fd = open(directory, O_WRONLY | O_CREAT, 0666)) == -1){ // Mudar o .txt para o sítio apropriado
         perror("Failed to open the directory\n");
         return -1;
     }
@@ -18,7 +18,7 @@ int writeLog(double instant, pid_t pid, action_type action){
 
     char* action_string = action_type_string[action];
 
-    snprintf(string_to_write, sizeof(string_to_write), "%f - %d - %s\n", instant, (int)pid, action_string);
+    snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s\n", instant, (int)pid, action_string);
 
     if(write(fd, string_to_write, strlen(string_to_write)) == -1){
         perror("Failed to write\n");

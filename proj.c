@@ -35,11 +35,8 @@ int main(int argc, char *argv[], char *envp[]){
     pid_t pid = getppid();
     action_type action = CREATE;
 
-
     // Falta dar cap às decimais
-    //writeLog(10, pid, action);
-
-    printf("SIZE: %d\n", getDirSize("./Test"));
+    writeLog(10, pid, action);
 
     return 0;
 }

@@ -11,6 +11,7 @@
 #include <limits.h>
 #include "log.h"
 #include "structparse.h"
+#include <math.h>
 
 void sigint_handler(int sigint);
 
@@ -38,7 +39,7 @@ int main(int argc, char *argv[], char *envp[]){
 
     writeLog(10, pid, action);
 
-    //printf("SIZE: %d\n", getDirSize("./Test")/1024);
+    printf("SIZE: %f\n", ceil(getDirSize("./Test")/1024));
 
 
 
@@ -155,7 +156,7 @@ int getDirSize(char* directory)
                 lstat(str,&statbuf);
                 size+=statbuf.st_size+getDirSize(str);
                 //getDirSize(str);
-                printf("size=%d\n",size/1024);
+                printf("size=%f\n",ceil(size/1024));
                 printf("%s\n",dentry->d_name);
             }
         }
@@ -166,7 +167,7 @@ int getDirSize(char* directory)
             strcat(str,dentry->d_name);
             lstat(str,&statbuf);
             size+=statbuf.st_size;
-            printf("size=%d\n",size/1024);
+            printf("size=%f\n",ceil(size/1024));
             printf("%s\n",dentry->d_name);
         }
     }
@@ -175,6 +176,57 @@ int getDirSize(char* directory)
 
 }
 
+
+
+/*stackovfl
+#ifndef NAME_MAX
+#define NAME_MAX 1024
+#endif
+
+static long getDirSize(char *dirname)
+{
+    DIR *dir = opendir(dirname);
+    if (dir == 0)
+        return 0;
+
+    struct dirent *dit;
+    struct stat st;
+    long size = 0;
+    long total_size = 0;
+    char filePath[NAME_MAX];
+
+    while ((dit = readdir(dir)) != NULL)
+    {
+        if ( (strcmp(dit->d_name, ".") == 0) || (strcmp(dit->d_name, "..") == 0) )
+            continue;
+
+        sprintf(filePath, "%s/%s", dirname, dit->d_name);
+        if (lstat(filePath, &st) != 0)
+            continue;
+        size = st.st_size;
+
+        if (S_ISDIR(st.st_mode))
+        {
+            long dir_size = getDirSize(filePath) + size;
+            printf("DIR\t");
+            printf("MODE: %lo\t", (unsigned long) st.st_mode);
+            printf("SIZE: %ld\t", dir_size);
+            printf("%s\n", filePath);
+            total_size += dir_size;
+        }
+        else
+        {
+            total_size += size;
+            printf("FILES\t");
+            printf("MODE: %lo\t", (unsigned long) st.st_mode);
+            printf("SIZE: %ld\t", size);
+            printf("%s\n", filePath);
+        }
+    }
+    return total_size;
+}
+
+*/
 
 // Gets size in blocks of 1024
 int calculateBlocks(int size, int block_size){

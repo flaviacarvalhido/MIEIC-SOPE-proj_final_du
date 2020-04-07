@@ -38,6 +38,11 @@ int main(int argc, char *argv[], char *envp[]){
     // Falta dar cap às decimais
     writeLog(10, pid, action);
 
+
+    printf("SIZE: %d\n", getDirSize("./Test")/1024);
+
+
+
     return 0;
 }
 
@@ -76,13 +81,13 @@ void simpleduPrototype(char* directory){
     }
 }
 
-
+/*
 int getDirSize(char* directory)
 {
-    char new_entry[100];
+    char new_entry[400];
     new_entry[0] = '\0';
     long int total = 0;
-    long int size;
+    long int size=0;
     struct stat statbuf;
     struct dirent* dentry;
     DIR *source_dir;
@@ -91,16 +96,22 @@ int getDirSize(char* directory)
 
     while( (dentry = readdir(source_dir)) != NULL)
     {
+        new_entry[0]='\0';
+
         // Ignora o diretório atual e o diretório pai
         if(strcmp(dentry->d_name, ".") == 0)
             continue;
         if(strcmp(dentry->d_name, "..") == 0)
             continue;
 
-        if(dentry->d_type == 4)
+        //printf("%s",dentry->d_name);
+
+        if(S_ISDIR(statbuf.st_mode)!=0)
         {
-            strcat(new_entry, "./");
+            strcat(new_entry, directory);
+            strcat(new_entry,"/");
             strcat(new_entry, dentry->d_name);
+            //printf("im here\n");
 
             printf("%s\n", new_entry);
 
@@ -112,7 +123,8 @@ int getDirSize(char* directory)
         }
         else
         {
-            stat(dentry->d_name, &statbuf);
+            printf("%s\n",new_entry);
+            stat(new_entry, &statbuf);
             size = statbuf.st_size;
             total += size;
         }
@@ -120,6 +132,50 @@ int getDirSize(char* directory)
     }
     return total;
 }
+*/
+
+
+int getDirSize(char* directory)
+{
+    struct stat statbuf;
+    DIR *source_dir;
+    struct dirent *dentry;
+    int size=0;
+    char str[100];
+
+    source_dir = opendir(directory);
+    while(dentry = readdir(source_dir))
+    {
+        if(dentry->d_type == 4)
+        {
+            if(dentry->d_name[0]!='.')
+            {
+                strcpy(str, directory);
+                strcat(str, "/");
+                strcat(str, dentry->d_name);
+                lstat(str,&statbuf);
+                size+=statbuf.st_size+4096*(countSubDirectories(str)+1);
+                getDirSize(str);
+                printf("size=%d\n",size);
+                printf("%s\n",dentry->d_name);
+            }
+        }
+        else
+        {
+            strcpy(str,directory);
+            strcat(str,"/");
+            strcat(str,dentry->d_name);
+            lstat(str,&statbuf);
+            size+=statbuf.st_size;
+            printf("size=%d\n",size);
+            printf("%s\n",dentry->d_name);
+        }
+    }
+
+    return size;
+
+}
+
 
 // Gets size in blocks of 1024
 int calculateBlocks(int size, int block_size){

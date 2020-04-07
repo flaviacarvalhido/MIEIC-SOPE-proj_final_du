@@ -82,7 +82,7 @@ void simpleduPrototype(char* directory){
 
 int getDirSize(char* directory)
 {
-    char new_entry[100];
+    char new_entry[400];
     new_entry[0] = '\0';
     long int total = 0;
     long int size;
@@ -100,7 +100,7 @@ int getDirSize(char* directory)
         if(strcmp(dentry->d_name, "..") == 0)
             continue;
 
-        if(dentry->d_type == 4)
+        if(S_ISDIR(statbuf.st_mode))
         {
             strcat(new_entry, "./");
             strcat(new_entry, dentry->d_name);

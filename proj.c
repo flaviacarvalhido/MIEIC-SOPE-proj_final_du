@@ -36,10 +36,10 @@ int main(int argc, char *argv[], char *envp[]){
     action_type action = CREATE;
 
 
-    // Falta dar cap às decimais e meter a escrever direito
-    writeLog(10, pid, action);
+    // Falta dar cap às decimais
+    //writeLog(10, pid, action);
 
-
+    printf("SIZE: %d\n", getDirSize("./Test"));
 
     return 0;
 }
@@ -80,39 +80,48 @@ void simpleduPrototype(char* directory){
 }
 
 
-int getDirSize(char* directory){
+int getDirSize(char* directory)
+{
+    char new_entry[100];
+    new_entry[0] = '\0';
+    long int total = 0;
+    long int size;
+    struct stat statbuf;
+    struct dirent* dentry;
+    DIR *source_dir;
 
-    int directory_size = 0;
-    DIR *pDir;
+    source_dir = opendir(directory);
 
-    if ((pDir = opendir(directory)) != NULL)
+    while( (dentry = readdir(source_dir)) != NULL)
     {
-        struct dirent *pDirent;
+        // Ignora o diretório atual e o diretório pai
+        if(strcmp(dentry->d_name, ".") == 0)
+            continue;
+        if(strcmp(dentry->d_name, "..") == 0)
+            continue;
 
-        while ( (pDirent = readdir(pDir)) != NULL)
+        if(dentry->d_type == 4)
         {
-            char buffer[PATH_MAX + 1];
-            strcat(strcat(strcpy(buffer, directory), "/"), pDirent->d_name);
-            struct stat file_stat;
-            if (stat(buffer, &file_stat) == 0){
-                directory_size += file_stat.st_size;
-                printf("DIRECTORY: %s\n", pDirent->d_name);
-                printf("DIRECTORY SIZE: %d\n", directory_size);
-            }
+            strcat(new_entry, "./");
+            strcat(new_entry, dentry->d_name);
 
-            if (pDirent->d_type == DT_DIR)
-            {
-                if ( strcmp(pDirent->d_name, ".") && strcmp(pDirent->d_name, "..") )
-                {
-                    directory_size += getDirSize(buffer);
-                }
-            }
+            printf("%s\n", new_entry);
+
+            int temp = getDirSize(new_entry);
+
+            printf("1\n");
+            total += 4096 + temp;
+            printf("2\n");
+        }
+        else
+        {
+            stat(dentry->d_name, &statbuf);
+            size = statbuf.st_size;
+            total += size;
         }
 
-        closedir(pDir);
     }
-
-    return directory_size;
+    return total;
 }
 
 // Gets size in blocks of 1024

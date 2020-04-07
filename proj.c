@@ -30,6 +30,7 @@ int main(int argc, char *argv[], char *envp[]){
 
     //simpleduPrototype(directory);
     parser(argc,argv);
+    //a
 
 
     pid_t pid = getppid();

@@ -152,9 +152,9 @@ int getDirSize(char* directory)
                 strcat(str, "/");
                 strcat(str, dentry->d_name);
                 lstat(str,&statbuf);
-                size+=statbuf.st_size+4096*(countSubDirectories(str)+1);
-                getDirSize(str);
-                printf("size=%d\n",size);
+                size+=statbuf.st_size+getDirSize(str);
+                //getDirSize(str);
+                printf("size=%d\n",size/1024);
                 printf("%s\n",dentry->d_name);
             }
         }
@@ -165,7 +165,7 @@ int getDirSize(char* directory)
             strcat(str,dentry->d_name);
             lstat(str,&statbuf);
             size+=statbuf.st_size;
-            printf("size=%d\n",size);
+            printf("size=%d\n",size/1024);
             printf("%s\n",dentry->d_name);
         }
     }

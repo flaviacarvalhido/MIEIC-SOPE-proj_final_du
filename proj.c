@@ -28,8 +28,18 @@ int main(int argc, char *argv[], char *envp[]){
 
     char directory[50] = "./Test";
 
-    simpleduPrototype(directory);
+    //simpleduPrototype(directory);
     parser(argc,argv);
+
+
+    pid_t pid = getppid();
+    action_type action = CREATE;
+
+
+    // Falta dar cap às decimais e meter a escrever direito
+    writeLog(10, pid, action);
+
+
 
     return 0;
 }

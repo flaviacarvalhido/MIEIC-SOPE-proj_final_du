@@ -30,17 +30,15 @@ int main(int argc, char *argv[], char *envp[]){
 
     //simpleduPrototype(directory);
     parser(argc,argv);
+    //a
 
 
     pid_t pid = getppid();
     action_type action = CREATE;
 
+    writeLog(10, pid, action);
 
-    // Falta dar cap às decimais
-    //writeLog(10, pid, action);
-
-   
-    printf("SIZE: %d\n", getDirSize("./Test")/1024);
+    //printf("SIZE: %d\n", getDirSize("./Test")/1024);
 
 
 
@@ -174,7 +172,7 @@ int getDirSize(char* directory)
     }
 
     return size;
-    
+
 }
 
 

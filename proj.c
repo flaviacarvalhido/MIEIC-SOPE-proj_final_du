@@ -6,18 +6,18 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <time.h>
+#include <sys/time.h>
 #include <signal.h>
 #include <limits.h>
 #include "log.h"
 #include "structparse.h"
 #include <math.h>
+#include "aux.h"
 
 void sigint_handler(int sigint);
 
 int countSubDirectories(char* directory);
 int countSubDirectoriesRecursive(char* directory);
-double getExecTime(clock_t begin);
 void resetSIGINT();
 int calculateBlocks(int size, int block_size);
 void simpleduPrototype(char* directory);
@@ -26,22 +26,21 @@ int getDirSize(char* directory);
 int receivedSIGINT;
 
 int main(int argc, char *argv[], char *envp[]){
+    struct timeval start;
+    gettimeofday(&start, NULL);
 
     char directory[50] = "./Test";
 
     //simpleduPrototype(directory);
     parser(argc,argv);
-    //a
 
 
     pid_t pid = getppid();
     action_type action = CREATE;
 
-    writeLog(10, pid, action);
+    writeLog(getExecTime(start), pid, action);
 
     printf("SIZE: %f\n", ceil(getDirSize("./Test")/1024));
-
-
 
     return 0;
 }
@@ -315,12 +314,6 @@ int countSubDirectoriesRecursive(char* directory){
 
     closedir(source_dir);
     return counter;
-}
-
-// Gets elapsed time since start of program
-double getExecTime(clock_t begin){
-    clock_t end = clock();
-    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 }
 
 void sigint_handler(int sigint)

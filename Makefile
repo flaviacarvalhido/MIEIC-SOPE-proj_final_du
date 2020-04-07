@@ -1,5 +1,5 @@
-proj: proj.o log.o structparse.o
-	gcc proj.o log.o structparse.o -Wall -o proj
+proj: proj.o log.o structparse.o aux.o
+	gcc proj.o log.o structparse.o aux.o -Wall -o proj
 
 proj.o: proj.c
 	gcc -c proj.c
@@ -10,6 +10,8 @@ log.o: log.c log.h
 structparse.o: structparse.c
 	gcc -c structparse.c
 
+aux.o: aux.c aux.h
+		gcc -c aux.c
 
 clean:
 	rm *.o proj

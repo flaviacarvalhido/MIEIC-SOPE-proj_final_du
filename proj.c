@@ -75,9 +75,9 @@ void simpleduPrototype(char* directory){
         }
 
         if(S_ISDIR(statbuf.st_mode)){
-            //int temp = getDirSize(dentry->d_name,0);
-            //printf("TEMP: %d\n", temp);
-            //printf("%d\t%s\n", calculateBlocks(temp, 1024), dentry->d_name);
+            int temp = getDirSize(dentry->d_name);
+            printf("TEMP: %d\n", temp);
+            printf("%d\t%s\n", calculateBlocks(temp, 1024), dentry->d_name);
         }
     }
 }
@@ -154,8 +154,8 @@ int getDirSize(char* directory)
                 strcpy(str, directory);
                 strcat(str, "/");
                 strcat(str, dentry->d_name);
-                stat(str,&statbuf);
-                size+=statbuf.st_size+4096;
+                lstat(str,&statbuf);
+                size+=statbuf.st_size+4096*(countSubDirectories(str)+1);
                 getDirSize(str);
                 printf("size=%d\n",size);
                 printf("%s\n",dentry->d_name);
@@ -166,9 +166,10 @@ int getDirSize(char* directory)
             strcpy(str,directory);
             strcat(str,"/");
             strcat(str,dentry->d_name);
-            stat(str,&statbuf);
+            lstat(str,&statbuf);
             size+=statbuf.st_size;
             printf("size=%d\n",size);
+            printf("%s\n",dentry->d_name);
         }
     }
 

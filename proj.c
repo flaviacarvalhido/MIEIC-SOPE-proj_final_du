@@ -28,8 +28,9 @@ int receivedSIGINT;
 int main(int argc, char *argv[], char *envp[]){
     struct timeval start;
     gettimeofday(&start, NULL);
-
     char directory[50] = "./Test";
+
+    resetLog();
 
     //simpleduPrototype(directory);
     parser(argc,argv);
@@ -38,9 +39,12 @@ int main(int argc, char *argv[], char *envp[]){
     pid_t pid = getppid();
     action_type action = CREATE;
 
-    writeLog(getExecTime(start), pid, action);
 
-    printf("SIZE: %f\n", ceil(getDirSize("./Test")/1024));
+    struct info info;
+
+    //writeLog(getExecTime(start), pid, action, info);
+
+    //printf("SIZE: %f\n", ceil(getDirSize("./Test")/1024));
 
     return 0;
 }

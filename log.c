@@ -1,6 +1,7 @@
 #include "log.h"
 
-int writeLog(double instant, pid_t pid, action_type action){
+
+int writeLog(double instant, pid_t pid, action_type action, struct info info){
     int fd;
     char* directory;
     char string_to_write[100];
@@ -15,6 +16,23 @@ int writeLog(double instant, pid_t pid, action_type action){
     // Construction of the string to write
 
     char* action_string = action_type_string[action];
+
+    switch (action) {
+        case CREATE:
+            for (size_t i = 0; i < sizeof(info.argv)/sizeof(struct info); i++) {
+                printf("%s\n", info.argv[i]);
+            }
+
+
+
+            char string_arg[100];
+
+            snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s - %s\n", instant, (int)pid, action_string, string_arg);
+            break;
+
+        default:
+            printf("Hello default\n");
+    }
 
     snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s\n", instant, (int)pid, action_string);
 

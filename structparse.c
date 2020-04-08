@@ -20,6 +20,7 @@ struct arg parser(int argc, char *argv[]){
             //printf("yes I work -b\n");
             continue;
         }
+
         if(strcmp(argv[i],"-B") ==0){
             i++;
             args.isBSize=true;
@@ -39,6 +40,25 @@ struct arg parser(int argc, char *argv[]){
             //printf("size: %d",args.size);
             continue;
         }
+        //another argument for -B size
+        if(strstr(argv[i], "--block-size=") != NULL){
+            args.isBSize=true;
+            strncpy(temp, argv[i]+13, sizeof(argv[i]));
+            temp[sizeof(temp)]='\0';  //null character added
+
+            if(atoi(temp)){
+                args.size=atoi(temp);
+                //printf("i worked\n");
+            }else{
+                args.error=true;
+                //printf("error\n");
+                return args;
+            }
+            //printf("yes I work --max\n");
+            //printf("depth: %d\n",args.depth);
+            continue;
+        }
+
         if(strcmp(argv[i],"-L")==0){
             args.isL=true;
             //printf("yes I work -L\n");
@@ -71,13 +91,15 @@ struct arg parser(int argc, char *argv[]){
         args.path=argv[i];
         //printf("path is : %s",args.path);
 
-
-
     }
 
     if(!args.isPath){
         args.path=".";
         //printf("path is current\n");
+    }
+
+    if(!args.isBSize){
+        args.size=1024;
     }
 
     return args;

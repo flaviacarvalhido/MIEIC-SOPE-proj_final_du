@@ -24,6 +24,7 @@ void simpleduPrototype(char* directory);
 int getDirSize(char* directory);
 
 int receivedSIGINT;
+struct arg args;
 
 int main(int argc, char *argv[], char *envp[]){
     struct timeval start;
@@ -33,7 +34,12 @@ int main(int argc, char *argv[], char *envp[]){
     resetLog();
 
     //simpleduPrototype(directory);
-    parser(argc,argv);
+    args=parser(argc,argv);
+
+    if(args.error){
+        printf("Error: wrong arguments provided");
+        exit(-1);
+    }
 
 
     pid_t pid = getppid();
@@ -159,9 +165,9 @@ int getDirSize(char* directory)
                 strcat(str, "/");
                 strcat(str, dentry->d_name);
                 lstat(str,&statbuf);
-                size+=statbuf.st_size+getDirSize(str);
+                size+=statbuf.st_blocks * 512/args.size+getDirSize(str);
                 //getDirSize(str);
-                printf("size=%f\n",ceil(size/1024));
+                printf("size=%f\n",ceil(size));
                 printf("%s\n",dentry->d_name);
             }
         }
@@ -171,8 +177,8 @@ int getDirSize(char* directory)
             strcat(str,"/");
             strcat(str,dentry->d_name);
             lstat(str,&statbuf);
-            size+=statbuf.st_size;
-            printf("size=%f\n",ceil(size/1024));
+            size+=statbuf.st_blocks*512/args.size;
+            printf("size=%f\n",ceil(size));
             printf("%s\n",dentry->d_name);
         }
     }

@@ -29,3 +29,6 @@ struct info {
 int writeLog(double instant, pid_t pid, action_type action, struct info info);
 void resetLog();
 char* getDirectoryEnv();
+
+// Loads the struct info with the command line arguments
+void loadArgv(struct info *info, char* argv[], int argc);

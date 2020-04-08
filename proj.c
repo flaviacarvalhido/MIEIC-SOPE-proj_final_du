@@ -42,7 +42,9 @@ int main(int argc, char *argv[], char *envp[]){
 
     struct info info;
 
-    //writeLog(getExecTime(start), pid, action, info);
+    loadArgv(&info, argv, argc);
+
+    writeLog(getExecTime(start), pid, action, info);
 
     //printf("SIZE: %f\n", ceil(getDirSize("./Test")/1024));
 

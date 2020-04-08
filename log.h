@@ -23,7 +23,7 @@ struct info {
    char* received_from_pipe;
    char* sent_from_pipe;
 
-   int entry; // Number of bytes
+   char* entry; // Number of bytes
 };
 
 int writeLog(double instant, pid_t pid, action_type action, struct info info);

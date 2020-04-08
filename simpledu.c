@@ -51,7 +51,7 @@ int main(int argc, char *argv[], char *envp[]){
 
     //int size=getDirSize("./Test")+4;
 
-    du("./Test");
+    du("/home/flavia/Desktop/SOPE/proj_final_du/Test");
 
 
     return 0;
@@ -61,43 +61,51 @@ int du(char * dir){
 
     int subdir=countSubDirectories(dir);
     char ** subdirectories=readSubDirs(dir);
-
+    pid_t pids[subdir];
+    int status;
+    
 
     for(unsigned int i=0;i<subdir;i++){
 
-        pid_t pid = fork();
 
+        pids[i] = fork();
 
+        printf("pid: %d\n",pids[i]);
 
-        if(pid==0){ //child
+        if(pids[i]==0){ //child
 
-            char * str;
-
-            printf("estou aqui\n");
+            char str[3000];
+            str[0]='\0';
 
             char * mydir= subdirectories[i];
-
             printf("%s\n",subdirectories[i]);
 
-            strcpy(str, dir);
+            strcat(str, dir);
             strcat(str, "/");
             strcat(str, mydir);
 
             printf("str=%s\n",str);
 
-
             int mysize = getDirSize(str)+4;
 
-            printf("str=%s\n",str);
+            printf("size=%d\n",mysize);
 
             if(countSubDirectories(str)!=0){
-                printf("estou aqui no if\n");
                 du(str);
             }
 
+            exit(99);
 
         }else{  //parent
-            sleep(2);
+            /*while (subdir > 0) {
+                printf("sou o papa\n");
+                wait(&status);
+                sleep(2);
+                --subdir;  
+            }
+            */
+           pid_t wpid;
+           while ((wpid = wait(&status)) > 0);
         }
     }
 
@@ -127,9 +135,8 @@ int getDirSize(char* directory)
                 strcat(str, dentry->d_name);
                 stat(str,&statbuf);
                 size+=statbuf.st_blocks * 512/args.size+getDirSize(str);
-                //getDirSize(str);
-                printf("%s\n",dentry->d_name);
-                printf("size=%d\n",size);
+                //printf("%s\n",dentry->d_name);
+                //printf("size=%d\n",size);
 
             }
         }
@@ -140,8 +147,8 @@ int getDirSize(char* directory)
             strcat(str,dentry->d_name);
             stat(str,&statbuf);
             size+=statbuf.st_blocks*512/args.size;
-            printf("%s\n",dentry->d_name);
-            printf("size=%d\n",size);
+            //printf("%s\n",dentry->d_name);
+            //printf("size=%d\n",size);
 
         }
     }

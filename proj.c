@@ -52,7 +52,7 @@ int main(int argc, char *argv[], char *envp[]){
 
     writeLog(getExecTime(start), pid, action, info);
 
-    printf("SIZE: %d\n", getDirSize("./Test"));
+    printf("SIZE: %d\n", getDirSize("./Test")+4);
 
     return 0;
 }
@@ -167,8 +167,9 @@ int getDirSize(char* directory)
                 lstat(str,&statbuf);
                 size+=statbuf.st_blocks * 512/args.size+getDirSize(str);
                 //getDirSize(str);
-                printf("size=%d\n",size);
                 printf("%s\n",dentry->d_name);
+                printf("size=%d\n",size);
+                
             }
         }
         else
@@ -178,8 +179,9 @@ int getDirSize(char* directory)
             strcat(str,dentry->d_name);
             lstat(str,&statbuf);
             size+=statbuf.st_blocks*512/args.size;
-            printf("size=%d\n",size);
             printf("%s\n",dentry->d_name);
+            printf("size=%d\n",size);
+            
         }
     }
 

@@ -43,7 +43,7 @@ int main(int argc, char *argv[], char *envp[]){
 
 
     pid_t pid = getppid();
-    action_type action = CREATE;
+    action_type action = EXIT;
 
 
     struct info info;
@@ -239,7 +239,7 @@ static long getDirSize(char *dirname)
 
 */
 
-// Gets size in blocks of 1024
+// Gets size in blocks specified
 int calculateBlocks(int size, int block_size){
     return size / block_size;
 }

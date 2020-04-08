@@ -1,8 +1,8 @@
-proj: proj.o log.o structparse.o aux.o
-	gcc proj.o log.o structparse.o aux.o -Wall -o proj
+simpledu: simpledu.o log.o structparse.o aux.o
+	gcc simpledu.o log.o structparse.o aux.o -Wall -o simpledu
 
-proj.o: proj.c
-	gcc -c proj.c
+simpledu.o: simpledu.c
+	gcc -c simpledu.c
 
 log.o: log.c log.h
 	gcc -c log.c
@@ -14,4 +14,4 @@ aux.o: aux.c aux.h
 		gcc -c aux.c
 
 clean:
-	rm *.o proj
+	rm *.o simpledu

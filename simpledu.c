@@ -13,6 +13,7 @@
 #include "structparse.h"
 #include <math.h>
 #include "aux.h"
+#include <sys/wait.h>
 
 void sigint_handler(int sigint);
 
@@ -22,6 +23,8 @@ void resetSIGINT();
 int calculateBlocks(int size, int block_size);
 void simpleduPrototype(char* directory);
 int getDirSize(char* directory);
+int du(char * dir);
+char ** readSubDirs(char*directory);
 
 int receivedSIGINT;
 struct arg args;
@@ -46,9 +49,60 @@ int main(int argc, char *argv[], char *envp[]){
         exit(-1);
     }
 
-    int size=getDirSize("./Test")+4;
+    //int size=getDirSize("./Test")+4;
+
+    du("./Test");
+
 
     return 0;
+}
+
+int du(char * dir){
+
+    int subdir=countSubDirectories(dir);
+    char ** subdirectories=readSubDirs(dir);
+    
+
+
+    for(unsigned int i=0;i<subdir;i++){
+        
+        pid_t pid = fork();
+        
+
+
+        if(pid==0){ //child
+
+            char * str;
+
+            printf("estou aqui\n");
+
+            char * mydir= subdirectories[i];
+
+            printf("%s\n",subdirectories[i]);
+
+            strcpy(str, dir);
+            strcat(str, "/");
+            strcat(str, mydir);
+
+            printf("str=%s\n",str);
+
+
+            int mysize = getDirSize(str)+4;
+
+            printf("str=%s\n",str);
+            
+            if(countSubDirectories(str)!=0){
+                printf("estou aqui no if\n");
+                du(str);
+            }
+
+
+        }else{  //parent
+            sleep(2);
+        }
+    }
+
+
 }
 
 // Auxiliary Functions to be placed elsewhere
@@ -72,7 +126,7 @@ int getDirSize(char* directory)
                 strcpy(str, directory);
                 strcat(str, "/");
                 strcat(str, dentry->d_name);
-                lstat(str,&statbuf);
+                stat(str,&statbuf);
                 size+=statbuf.st_blocks * 512/args.size+getDirSize(str);
                 //getDirSize(str);
                 printf("%s\n",dentry->d_name);
@@ -85,7 +139,7 @@ int getDirSize(char* directory)
             strcpy(str,directory);
             strcat(str,"/");
             strcat(str,dentry->d_name);
-            lstat(str,&statbuf);
+            stat(str,&statbuf);
             size+=statbuf.st_blocks*512/args.size;
             printf("%s\n",dentry->d_name);
             printf("size=%d\n",size);
@@ -184,6 +238,40 @@ int countSubDirectoriesRecursive(char* directory){
 
     closedir(source_dir);
     return counter;
+}
+
+char ** readSubDirs(char*directory){
+
+    static char * vector[3000];
+    DIR *source_dir;
+    struct dirent *dentry;
+    int index=0;
+    int fd;
+    struct stat statbuf;
+
+    source_dir = opendir(directory);
+    while ((dentry = readdir(source_dir)) != NULL){
+
+        // Ignora o diretório atual e o diretório pai
+        if(strcmp(dentry->d_name, ".") == 0)
+        continue;
+        if(strcmp(dentry->d_name, "..") == 0)
+        continue;
+
+        fd = dirfd(source_dir); // Transforms directory into a file descriptor
+
+        // Lê informações para o statbuf
+        if(fstatat(fd, dentry->d_name, &statbuf, 0) < 0){
+            perror("Could not read info");
+            continue;
+        }
+
+        if(S_ISDIR(statbuf.st_mode)){
+            vector[index]=dentry->d_name;
+            index++;
+        }
+    }
+    return vector;
 }
 
 void sigint_handler(int sigint)

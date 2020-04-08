@@ -1,6 +1,5 @@
 #include "aux.h"
 
-// Gets elapsed time since start of program
 double getExecTime(struct timeval start){
     struct timeval stop;
 

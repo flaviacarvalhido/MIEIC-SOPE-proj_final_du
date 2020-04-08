@@ -1,6 +1,7 @@
 #include "log.h"
 
-int writeLog(double instant, pid_t pid, action_type action){
+
+int writeLog(double instant, pid_t pid, action_type action, struct info info){
     int fd;
     char* directory;
     char string_to_write[100];
@@ -16,7 +17,21 @@ int writeLog(double instant, pid_t pid, action_type action){
 
     char* action_string = action_type_string[action];
 
-    snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s\n", instant, (int)pid, action_string);
+    switch (action) {
+        case CREATE: {
+            char string_arg[100];
+
+            for (size_t i = 0; i < info.argv_size; i++) {
+                strcat(string_arg, info.argv[i]);
+                strcat(string_arg, " ");
+            }
+            // TODO: Fica por vezes com um símbolo estranho antes da informação 
+            snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s - %s\n", instant, (int)pid, action_string, string_arg);
+            break;
+        }
+        default:
+            break;
+    }
 
     if(write(fd, string_to_write, strlen(string_to_write)) == -1){
         perror("Failed to write\n");
@@ -40,4 +55,12 @@ char* getDirectoryEnv(){
         directory = "log.txt";
 
     return directory;
+}
+
+void loadArgv(struct info *info, char* argv[], int argc){
+    for (size_t i = 0; i < argc; i++) {
+        info->argv[i] = argv[i];
+    }
+
+    info->argv_size = argc;
 }

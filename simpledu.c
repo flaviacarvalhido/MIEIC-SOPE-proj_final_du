@@ -36,9 +36,9 @@ int main(int argc, char *argv[], char *envp[]){
     char directory[50] = "./Test";
 
     resetLog();
-    writeLog(getExecTime(start),getpid(),CREATE,i);
 
     loadArgv(&i,argv,argc);
+    writeLog(getExecTime(start),getpid(),CREATE,i);
 
     args=parser(argc,argv);
 
@@ -61,13 +61,13 @@ int du(char * dir){
 
     int subdir=countSubDirectories(dir);
     char ** subdirectories=readSubDirs(dir);
-    
+
 
 
     for(unsigned int i=0;i<subdir;i++){
-        
+
         pid_t pid = fork();
-        
+
 
 
         if(pid==0){ //child
@@ -90,7 +90,7 @@ int du(char * dir){
             int mysize = getDirSize(str)+4;
 
             printf("str=%s\n",str);
-            
+
             if(countSubDirectories(str)!=0){
                 printf("estou aqui no if\n");
                 du(str);
@@ -131,7 +131,7 @@ int getDirSize(char* directory)
                 //getDirSize(str);
                 printf("%s\n",dentry->d_name);
                 printf("size=%d\n",size);
-                
+
             }
         }
         else
@@ -143,7 +143,7 @@ int getDirSize(char* directory)
             size+=statbuf.st_blocks*512/args.size;
             printf("%s\n",dentry->d_name);
             printf("size=%d\n",size);
-            
+
         }
     }
 

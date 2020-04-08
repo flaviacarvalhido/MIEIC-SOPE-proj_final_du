@@ -233,7 +233,7 @@ static long getDirSize(char *dirname)
 
 */
 
-// Gets size in blocks of 1024
+// Gets size in blocks specified
 int calculateBlocks(int size, int block_size){
     return size / block_size;
 }

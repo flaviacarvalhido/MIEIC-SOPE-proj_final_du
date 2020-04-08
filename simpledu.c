@@ -63,7 +63,6 @@ int du(char * dir){
     char ** subdirectories=readSubDirs(dir);
     
 
-
     for(unsigned int i=0;i<subdir;i++){
         
         pid_t pid = fork();

@@ -33,6 +33,26 @@ int writeLog(double instant, pid_t pid, action_type action, struct info info){
             snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s - %d\n", instant, (int)pid, action_string, info.exit_code);
             break;
         }
+        case RECV_SIGNAL: {
+            snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s - %s\n", instant, (int)pid, action_string, info.received_signal);
+            break;
+        }
+        case SEND_SIGNAL: {
+            snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s - %s\n", instant, (int)pid, action_string, info.sent_signal);
+            break;
+        }
+        case RECV_PIPE: {
+            snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s - %s\n", instant, (int)pid, action_string, info.received_from_pipe);
+            break;
+        }
+        case SEND_PIPE: {
+            snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s - %s\n", instant, (int)pid, action_string, info.sent_from_pipe);
+            break;
+        }
+        case ENTRY: {
+            snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s - %s\n", instant, (int)pid, action_string, info.entry);
+            break;
+        }
         default:
             break;
     }

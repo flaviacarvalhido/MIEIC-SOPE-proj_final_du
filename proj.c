@@ -41,17 +41,6 @@ int main(int argc, char *argv[], char *envp[]){
         exit(-1);
     }
 
-
-    pid_t pid = getppid();
-    action_type action = EXIT;
-
-
-    struct info info;
-
-    loadArgv(&info, argv, argc);
-
-    writeLog(getExecTime(start), pid, action, info);
-
     printf("SIZE: %d\n", getDirSize("./Test")+4);
 
     return 0;
@@ -145,7 +134,7 @@ int getDirSize(char* directory)
 }
 */
 
-
+//always add +4 when called to account for current directory
 int getDirSize(char* directory)
 {
     struct stat statbuf;

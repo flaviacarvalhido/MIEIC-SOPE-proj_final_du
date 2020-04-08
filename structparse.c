@@ -6,6 +6,7 @@ struct arg parser(int argc, char *argv[]){
 
     struct arg args;
     char temp[100];
+    args.error=false;
 
     for(unsigned int i=2;i<=argc-1;i++){
 

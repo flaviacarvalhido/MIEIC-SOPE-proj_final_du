@@ -37,7 +37,7 @@ int main(int argc, char *argv[], char *envp[]){
     args=parser(argc,argv);
 
     if(args.error){
-        printf("Error: wrong arguments provided");
+        printf("Error: wrong arguments provided\n");
         exit(-1);
     }
 
@@ -52,7 +52,7 @@ int main(int argc, char *argv[], char *envp[]){
 
     writeLog(getExecTime(start), pid, action, info);
 
-    //printf("SIZE: %f\n", ceil(getDirSize("./Test")/1024));
+    printf("SIZE: %d\n", getDirSize("./Test"));
 
     return 0;
 }
@@ -167,7 +167,7 @@ int getDirSize(char* directory)
                 lstat(str,&statbuf);
                 size+=statbuf.st_blocks * 512/args.size+getDirSize(str);
                 //getDirSize(str);
-                printf("size=%f\n",ceil(size));
+                printf("size=%d\n",size);
                 printf("%s\n",dentry->d_name);
             }
         }
@@ -178,7 +178,7 @@ int getDirSize(char* directory)
             strcat(str,dentry->d_name);
             lstat(str,&statbuf);
             size+=statbuf.st_blocks*512/args.size;
-            printf("size=%f\n",ceil(size));
+            printf("size=%d\n",size);
             printf("%s\n",dentry->d_name);
         }
     }

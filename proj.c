@@ -37,7 +37,7 @@ int main(int argc, char *argv[], char *envp[]){
 
 
     pid_t pid = getppid();
-    action_type action = CREATE;
+    action_type action = EXIT;
 
 
     struct info info;

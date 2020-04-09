@@ -1,0 +1,2 @@
+179.00 - 6172 - CREATE - ./simpledu Test -l 
+698.00 - 6172 - ENTRY - 140	Test

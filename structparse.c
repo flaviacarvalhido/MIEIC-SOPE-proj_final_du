@@ -8,22 +8,14 @@ struct arg parser(int argc, char *argv[]){
     char temp[100];
     args.error=false;
 
-<<<<<<< HEAD
-    args.isL = false;
-
-    if(argc < 2 || (strcmp(argv[1],"-l") != 0 && strcmp(argv[1],"--count-links")!= 0)){
-=======
     args.isL=false;
     args.isMax =false;
     args.isl=false;
 
     if(argc < 2){
->>>>>>> 9853e5d2d103cb25acb5cc8431049549a60b0003
         args.error=true;
         return args;
     }
-
-
 
     for(unsigned int i=1;i<=argc-1;i++){
 

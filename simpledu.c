@@ -28,23 +28,24 @@ char ** readSubDirs(char*directory);
 int receivedSIGINT;
 struct arg args;
 struct info i;
+struct timeval start;
+
 
 int main(int argc, char *argv[], char *envp[]){
-    struct timeval start;
     gettimeofday(&start, NULL);
     char directory[50] = "./Test";
 
     resetLog();
 
     loadArgv(&i,argv,argc);
-    writeLog(getExecTime(start),getpid(),CREATE,i);
+    writeLog(getExecTime(),getpid(),CREATE,i);
 
     args=parser(argc,argv);
 
     if(args.error){
         printf("Error: wrong arguments provided. ./simpledu [-l or --count-links] <args>\n");
         i.exit_code=-1;
-        writeLog(getExecTime(start),getpid(),EXIT,i);
+        writeLog(getExecTime(),getpid(),EXIT,i);
         exit(-1);
     }
 
@@ -54,20 +55,26 @@ int main(int argc, char *argv[], char *envp[]){
     //du(args.path);
     int depth=args.depth;
 
-    if(depth!=0){
-        du("./Test",depth);
+    if(depth!=0 || !args.isS){
+        du(directory,depth);
     }
+    
 
     //prints info of path provided in args
     //printf("%s\n",args.path);
     int size_parent=getDirSize(args.path)+4;
     //printf("%d\n",size_parent);
+
+    char string_to_log[100];
+    snprintf(string_to_log, sizeof(string_to_log), "%d\t%s\n", size_parent, args.path);
+    i.entry = string_to_log;
+    writeLog(getExecTime(), getpid(), ENTRY, i);
     printf("%d\t%s\n", size_parent, args.path);
 
     return 0;
 }
 
-int du(char * dir,int d){
+int du(char * dir, int d){
 
     int subdir=countSubDirectories(dir);
     char ** subdirectories=readSubDirs(dir);
@@ -147,7 +154,16 @@ int getDirSize(char* directory)
                 strcat(str, "/");
                 strcat(str, dentry->d_name);
                 lstat(str,&statbuf);
-                size+=statbuf.st_blocks * 512/args.size+getDirSize(str);
+                int temp=statbuf.st_blocks * 512/args.size+getDirSize(str);
+                size+=temp;
+
+                if(args.isA){
+                    char string_to_log[100];
+                    snprintf(string_to_log, sizeof(string_to_log), "%d\t%s\n", temp, str);
+                    i.entry = string_to_log;
+                    writeLog(getExecTime(), getpid(), ENTRY, i);
+                    printf("%d\t%s\n", temp, str);
+                }
                 //printf("%s\n",dentry->d_name);
                 //printf("size=%d\n",size);
 
@@ -159,8 +175,18 @@ int getDirSize(char* directory)
             strcat(str,"/");
             strcat(str,dentry->d_name);
             lstat(str,&statbuf);
-            if(!S_ISLNK(statbuf.st_mode))
-                size+=statbuf.st_blocks*512/args.size;
+            int temp = 0;
+            if(!S_ISLNK(statbuf.st_mode)){
+                temp=statbuf.st_blocks*512/args.size;
+                size+=temp;
+            }
+            if(args.isA){
+                char string_to_log[100];
+                snprintf(string_to_log, sizeof(string_to_log), "%d\t%s\n", temp, str);
+                i.entry = string_to_log;
+                writeLog(getExecTime(), getpid(), ENTRY, i);
+                printf("%d\t%s\n", temp, str);
+            }
             //printf("%s\n",dentry->d_name);
             //printf("size=%d\n",size);
 

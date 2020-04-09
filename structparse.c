@@ -11,6 +11,7 @@ struct arg parser(int argc, char *argv[]){
     args.isL=false;
     args.isMax =false;
     args.isl=false;
+    args.isS=false;
 
     if(argc < 2){
         args.error=true;
@@ -79,7 +80,7 @@ struct arg parser(int argc, char *argv[]){
             //printf("yes I work -L\n");
             continue;
         }
-        if(strcmp(argv[i],"-S")==0 || strcmp(argv[i],"--separate-dirs")==0){
+        if(strcmp(argv[i],"-S")==0 || strcmp(argv[i],"-s")==0 || strcmp(argv[i],"--separate-dirs")==0){
             args.isS=true;
             //printf("yes I work -S\n");
             continue;

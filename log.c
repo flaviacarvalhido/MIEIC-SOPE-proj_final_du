@@ -20,38 +20,38 @@ int writeLog(double instant, pid_t pid, action_type action, struct info info){
     switch (action) {
         case CREATE: {
             char string_arg[100];
+            string_arg[0]='\0';
 
             for (size_t i = 0; i < info.argv_size; i++) {
                 strcat(string_arg, info.argv[i]);
                 strcat(string_arg, " ");
             }
 
-            // TODO: Fica por vezes com um símbolo estranho antes da informação
             snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s - %s\n", instant, (int)pid, action_string, string_arg);
             break;
         }
         case EXIT: {
-            snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s - %d\n", instant, (int)pid, action_string, info.exit_code);
+            snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s - %d", instant, (int)pid, action_string, info.exit_code);
             break;
         }
         case RECV_SIGNAL: {
-            snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s - %s\n", instant, (int)pid, action_string, info.received_signal);
+            snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s - %s", instant, (int)pid, action_string, info.received_signal);
             break;
         }
         case SEND_SIGNAL: {
-            snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s - %s\n", instant, (int)pid, action_string, info.sent_signal);
+            snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s - %s", instant, (int)pid, action_string, info.sent_signal);
             break;
         }
         case RECV_PIPE: {
-            snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s - %s\n", instant, (int)pid, action_string, info.received_from_pipe);
+            snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s - %s", instant, (int)pid, action_string, info.received_from_pipe);
             break;
         }
         case SEND_PIPE: {
-            snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s - %s\n", instant, (int)pid, action_string, info.sent_from_pipe);
+            snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s - %s", instant, (int)pid, action_string, info.sent_from_pipe);
             break;
         }
         case ENTRY: {
-            snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s - %s\n", instant, (int)pid, action_string, info.entry);
+            snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s - %s", instant, (int)pid, action_string, info.entry);
             break;
         }
         default:

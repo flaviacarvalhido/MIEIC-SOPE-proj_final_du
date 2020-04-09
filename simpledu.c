@@ -38,14 +38,14 @@ int main(int argc, char *argv[], char *envp[]){
     resetLog();
 
     loadArgv(&i,argv,argc);
-    writeLog(getExecTime(start),getpid(),CREATE,i);
+    writeLog(getExecTime(),getpid(),CREATE,i);
 
     args=parser(argc,argv);
 
     if(args.error){
         printf("Error: wrong arguments provided. ./simpledu [-l or --count-links] <args>\n");
         i.exit_code=-1;
-        writeLog(getExecTime(start),getpid(),EXIT,i);
+        writeLog(getExecTime(),getpid(),EXIT,i);
         exit(-1);
     }
 
@@ -65,7 +65,7 @@ int main(int argc, char *argv[], char *envp[]){
     char string_to_log[100];
     snprintf(string_to_log, sizeof(string_to_log), "%d\t%s\n", size_parent, args.path);
     i.entry = string_to_log;
-    writeLog(getExecTime(start), getpid(), ENTRY, i);
+    writeLog(getExecTime(), getpid(), ENTRY, i);
     printf("%d\t%s\n", size_parent, args.path);
 
     return 0;
@@ -158,7 +158,7 @@ int getDirSize(char* directory)
                     char string_to_log[100];
                     snprintf(string_to_log, sizeof(string_to_log), "%d\t%s\n", temp, str);
                     i.entry = string_to_log;
-                    writeLog(getExecTime(start), getpid(), ENTRY, i);
+                    writeLog(getExecTime(), getpid(), ENTRY, i);
                     printf("%d\t%s\n", temp, str);
                 }
                 //printf("%s\n",dentry->d_name);
@@ -181,7 +181,7 @@ int getDirSize(char* directory)
                 char string_to_log[100];
                 snprintf(string_to_log, sizeof(string_to_log), "%d\t%s\n", temp, str);
                 i.entry = string_to_log;
-                writeLog(getExecTime(start), getpid(), ENTRY, i);
+                writeLog(getExecTime(), getpid(), ENTRY, i);
                 printf("%d\t%s\n", temp, str);
             }
             //printf("%s\n",dentry->d_name);

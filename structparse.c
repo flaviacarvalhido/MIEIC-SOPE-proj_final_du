@@ -130,5 +130,9 @@ struct arg parser(int argc, char *argv[]){
         args.error=true;
     }
 
+    if(args.isA && args.isS){
+        args.error=true;
+    }
+    
     return args;
 }

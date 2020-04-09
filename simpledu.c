@@ -49,6 +49,9 @@ int main(int argc, char *argv[], char *envp[]){
         exit(-1);
     }
 
+
+    //int size=getDirSize("./Test")+4;
+
     du("/home/flavia/Desktop/SOPE/proj_final_du/Test");
 
     //prints info of path provided in args
@@ -65,7 +68,7 @@ int du(char * dir){
     char ** subdirectories=readSubDirs(dir);
     pid_t pids[subdir];
     int status;
-    
+
 
     for(unsigned int i=0;i<subdir;i++){
 

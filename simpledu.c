@@ -4,7 +4,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
-#include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/time.h>
 #include <signal.h>
@@ -58,9 +57,10 @@ int main(int argc, char *argv[], char *envp[]){
     du("./Test",depth);
 
     //prints info of path provided in args
-    printf("%s\n",args.path);
-    int size_parent=getDirSize(args.path);
-    printf("%d\n",size_parent);
+    //printf("%s\n",args.path);
+    int size_parent=getDirSize(args.path)+4;
+    //printf("%d\n",size_parent);
+    printf("%d\t%s\n", size_parent, args.path);
 
     return 0;
 }
@@ -73,15 +73,9 @@ int du(char * dir,int d){
     int status;
     struct stat buf;
     d--;
-    
 
 
     for(unsigned int i=0;i<subdir;i++){
-
-        lstat(subdirectories[i],&buf);
-        if(!args.isL && S_ISLNK(buf.st_mode)){
-            continue;
-        }
 
         pids[i] = fork();
 
@@ -91,18 +85,27 @@ int du(char * dir,int d){
             str[0]='\0';
 
             char * mydir= subdirectories[i];
+            //printf("%s\n",subdirectories[i]);
 
             strcat(str, dir);
             strcat(str, "/");
             strcat(str, mydir);
 
-            printf("str=%s\n",str);
+            //printf("str=%s\n",str);
+
+            lstat(str,&buf);
+            if(!args.isL && S_ISLNK(buf.st_mode)){
+                exit(2);
+            }
 
             int mysize = getDirSize(str)+4;
 
-            printf("size=%d\n",mysize);
+            //printf("size=%d\n",mysize);
 
-            printf("depthfilho:%d\n",d);
+            printf("%d\t%s\n", mysize, str);
+
+
+            //printf("depthfilho:%d\n",d);
             if(countSubDirectories(str)!=0 && d>0){
                 du(str,d);
             }
@@ -110,8 +113,10 @@ int du(char * dir,int d){
             exit(99);
 
         }else{  //parent
-           pid_t wpid;
-           while ((wpid = wait(&status)) > 0);
+            //args.depth--;
+            //printf("depthpai:%d\n",args.depth);
+            pid_t wpid;
+            while ((wpid = wait(&status)) > 0);
         }
     }
 
@@ -139,7 +144,7 @@ int getDirSize(char* directory)
                 strcpy(str, directory);
                 strcat(str, "/");
                 strcat(str, dentry->d_name);
-                stat(str,&statbuf);
+                lstat(str,&statbuf);
                 size+=statbuf.st_blocks * 512/args.size+getDirSize(str);
                 //printf("%s\n",dentry->d_name);
                 //printf("size=%d\n",size);
@@ -151,8 +156,9 @@ int getDirSize(char* directory)
             strcpy(str,directory);
             strcat(str,"/");
             strcat(str,dentry->d_name);
-            stat(str,&statbuf);
-            size+=statbuf.st_blocks*512/args.size;
+            lstat(str,&statbuf);
+            if(!S_ISLNK(statbuf.st_mode))
+                size+=statbuf.st_blocks*512/args.size;
             //printf("%s\n",dentry->d_name);
             //printf("size=%d\n",size);
 

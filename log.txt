@@ -1,10 +1,1 @@
-<<<<<<< HEAD
-294.00 - 18818 - CREATE - ./simpledu -l Test -L 
-=======
-<<<<<<< HEAD
-155.00 - 10293 - CREATE - ./simpledu -l Test --max-depth=2 
-=======
-270.00 - 5119 - CREATE - ./simpledu -l 
-392.00 - 5119 - EXIT - -1
->>>>>>> 7668958b1f78deb11cb688e45f7e642dd08fd103
->>>>>>> 65b21272d7ab889e38de6ff656eac6443a59107c
+

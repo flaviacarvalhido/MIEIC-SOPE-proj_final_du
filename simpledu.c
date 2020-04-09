@@ -34,6 +34,8 @@ int main(int argc, char *argv[], char *envp[]){
     gettimeofday(&start, NULL);
     char directory[50] = "./Test/Test1";
 
+    //Zaah
+
     resetLog();
 
     loadArgv(&i,argv,argc);

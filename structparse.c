@@ -8,15 +8,22 @@ struct arg parser(int argc, char *argv[]){
     char temp[100];
     args.error=false;
 
+    if(strcmp(argv[1],"-l") != 0 && strcmp(argv[1],"--count-links")!= 0){
+        args.error=true;
+        return args;
+    }
+
+
+
     for(unsigned int i=2;i<=argc-1;i++){
 
 
-        if(strcmp(argv[i],"-a")==0){
+        if(strcmp(argv[i],"-a")==0 || strcmp(argv[i],"--all")==0){
             args.isA=true;
             //printf("yes I work -a\n");
             continue;
         }
-        if(strcmp(argv[i],"-b")==0){
+        if(strcmp(argv[i],"-b")==0 || strcmp(argv[i],"--bytes")==0){
             args.isB=true;
             //printf("yes I work -b\n");
             continue;
@@ -60,12 +67,12 @@ struct arg parser(int argc, char *argv[]){
             continue;
         }
 
-        if(strcmp(argv[i],"-L")==0){
+        if(strcmp(argv[i],"-L")==0 || strcmp(argv[i],"--dereference")==0){
             args.isL=true;
             //printf("yes I work -L\n");
             continue;
         }
-        if(strcmp(argv[i],"-S")==0){
+        if(strcmp(argv[i],"-S")==0 || strcmp(argv[i],"--separate-dirs")==0){
             args.isS=true;
             //printf("yes I work -S\n");
             continue;

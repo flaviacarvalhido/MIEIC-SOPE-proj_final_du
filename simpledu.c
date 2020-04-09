@@ -43,16 +43,18 @@ int main(int argc, char *argv[], char *envp[]){
     args=parser(argc,argv);
 
     if(args.error){
-        printf("Error: wrong arguments provided\n");
+        printf("Error: wrong arguments provided. ./simpledu [-l or --count-links] <args>\n");
         i.exit_code=-1;
         writeLog(getExecTime(start),getpid(),EXIT,i);
         exit(-1);
     }
 
-    //int size=getDirSize("./Test")+4;
-
     du("/home/flavia/Desktop/SOPE/proj_final_du/Test");
 
+    //prints info of path provided in args
+    printf("/home/flavia/Desktop/SOPE/proj_final_du/Test\n");
+    int size_parent=getDirSize("/home/flavia/Desktop/SOPE/proj_final_du/Test");
+    printf("%d\n",size_parent);
 
     return 0;
 }
@@ -97,13 +99,6 @@ int du(char * dir){
             exit(99);
 
         }else{  //parent
-            /*while (subdir > 0) {
-                printf("sou o papa\n");
-                wait(&status);
-                sleep(2);
-                --subdir;  
-            }
-            */
            pid_t wpid;
            while ((wpid = wait(&status)) > 0);
         }

@@ -81,15 +81,12 @@ int du(char * dir){
 
         pids[i] = fork();
 
-        printf("pid: %d\n",pids[i]);
-
         if(pids[i]==0){ //child
 
             char str[3000];
             str[0]='\0';
 
             char * mydir= subdirectories[i];
-            printf("%s\n",subdirectories[i]);
 
             strcat(str, dir);
             strcat(str, "/");
@@ -98,8 +95,6 @@ int du(char * dir){
             printf("str=%s\n",str);
 
             int mysize = getDirSize(str)+4;
-
-            printf("size=%d\n",mysize);
 
             if(countSubDirectories(str)!=0){
                 du(str);

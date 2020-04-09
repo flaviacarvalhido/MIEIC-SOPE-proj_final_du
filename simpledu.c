@@ -32,7 +32,7 @@ struct info i;
 int main(int argc, char *argv[], char *envp[]){
     struct timeval start;
     gettimeofday(&start, NULL);
-    char directory[50] = "./Test";
+    char directory[50] = "./Test/Test1";
 
     resetLog();
 
@@ -54,7 +54,7 @@ int main(int argc, char *argv[], char *envp[]){
     //du(args.path);
     int depth=args.depth;
 
-    du("./Test",depth);
+    du(directory,depth);
 
     //prints info of path provided in args
     //printf("%s\n",args.path);
@@ -65,7 +65,7 @@ int main(int argc, char *argv[], char *envp[]){
     return 0;
 }
 
-int du(char * dir,int d){
+int du(char * dir, int d){
 
     int subdir=countSubDirectories(dir);
     char ** subdirectories=readSubDirs(dir);
@@ -146,6 +146,9 @@ int getDirSize(char* directory)
                 strcat(str, dentry->d_name);
                 lstat(str,&statbuf);
                 size+=statbuf.st_blocks * 512/args.size+getDirSize(str);
+
+                if(args.isA)
+                    printf("%d\t%s\n", size, str);
                 //printf("%s\n",dentry->d_name);
                 //printf("size=%d\n",size);
 
@@ -159,6 +162,8 @@ int getDirSize(char* directory)
             lstat(str,&statbuf);
             if(!S_ISLNK(statbuf.st_mode))
                 size+=statbuf.st_blocks*512/args.size;
+            if(args.isA)
+                printf("%d\t%s\n", size, str);
             //printf("%s\n",dentry->d_name);
             //printf("size=%d\n",size);
 

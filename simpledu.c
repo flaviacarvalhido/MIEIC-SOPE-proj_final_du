@@ -74,10 +74,6 @@ int du(char * dir){
 
     for(unsigned int i=0;i<subdir;i++){
 
-        lstat(subdirectories[i],&buf);
-        if(!args.isL && S_ISLNK(buf.st_mode)){
-            continue;
-        }
 
         pids[i] = fork();
 
@@ -89,13 +85,18 @@ int du(char * dir){
             str[0]='\0';
 
             char * mydir= subdirectories[i];
-            printf("%s\n",subdirectories[i]);
+            //printf("%s\n",subdirectories[i]);
 
             strcat(str, dir);
             strcat(str, "/");
             strcat(str, mydir);
 
             printf("str=%s\n",str);
+
+            lstat(str,&buf);
+            if(!args.isL && S_ISLNK(buf.st_mode)){
+                exit(2);
+            }
 
             int mysize = getDirSize(str)+4;
 

@@ -49,6 +49,7 @@ int main(int argc, char *argv[], char *envp[]){
         exit(-1);
     }
 
+
     //int size=getDirSize("./Test")+4;
 
     du("/home/flavia/Desktop/SOPE/proj_final_du/Test");
@@ -63,7 +64,7 @@ int du(char * dir){
     char ** subdirectories=readSubDirs(dir);
     pid_t pids[subdir];
     int status;
-    
+
 
     for(unsigned int i=0;i<subdir;i++){
 
@@ -101,7 +102,7 @@ int du(char * dir){
                 printf("sou o papa\n");
                 wait(&status);
                 sleep(2);
-                --subdir;  
+                --subdir;
             }
             */
            pid_t wpid;

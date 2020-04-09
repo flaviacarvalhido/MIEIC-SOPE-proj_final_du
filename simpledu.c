@@ -33,7 +33,7 @@ struct timeval start;
 
 int main(int argc, char *argv[], char *envp[]){
     gettimeofday(&start, NULL);
-    char directory[50] = "./Test";
+    char directory[50] = ".";
 
     resetLog();
 
@@ -57,7 +57,7 @@ int main(int argc, char *argv[], char *envp[]){
 
     
     if(depth!=0){
-        du(directory,depth);
+        du(args.path,depth);
     }
     
     
@@ -85,7 +85,7 @@ int du(char * dir, int d){
 
     int subdir=countSubDirectories(dir);
     char ** subdirectories=readSubDirs(dir);
-    pid_t pids[subdir];
+    pid_t pid;
     int status;
     struct stat buf;
     d--;
@@ -93,9 +93,9 @@ int du(char * dir, int d){
 
     for(unsigned int i=0;i<subdir;i++){
 
-        pids[i] = fork();
+        pid = fork();
 
-        if(pids[i]==0){ //child
+        if(pid==0){ //child
 
             char str[3000];
             str[0]='\0';
@@ -160,8 +160,9 @@ int getDirSize(char* directory)
     {
         if(dentry->d_type == 4)
         {
-            if(dentry->d_name[0]!='.' && !args.isS)
+            if(!(strcmp(dentry->d_name,"..")==0)  && !args.isS &&  (strlen(dentry->d_name)>1 &&  !args.isS))
             {
+
                 strcpy(str, directory);
                 strcat(str, "/");
                 strcat(str, dentry->d_name);
@@ -176,13 +177,16 @@ int getDirSize(char* directory)
                     size+=temp;
                 }
 
+                /*
                 if(args.isA){
+                    printf("ola\n");
                     char string_to_log[100];
                     snprintf(string_to_log, sizeof(string_to_log), "%d\t%s\n", temp, str);
                     i.entry = string_to_log;
                     writeLog(getExecTime(), getpid(), ENTRY, i);
                     printf("%d\t%s\n", temp, str);
                 }
+                */
                 //printf("%s\n",dentry->d_name);
                 //printf("size=%d\n",size);
 
@@ -190,37 +194,51 @@ int getDirSize(char* directory)
         }
         else
         {
-            strcpy(str,directory);
-            strcat(str,"/");
-            strcat(str,dentry->d_name);
-
-            if(args.isL)
-                stat(str,&statbuf);
-            else
-            {
-                lstat(str,&statbuf);
-            }
-
-            int temp = 0;
-            if(args.isB){
-                temp=statbuf.st_size;
-                size+=temp;
-            }else{
-                temp=statbuf.st_blocks*512/args.size;
-                size+=temp;
-            }
-
             if(args.isA){
+                strcpy(str,directory);
+                strcat(str,"/");
+                strcat(str,dentry->d_name);
+
+                if(args.isL)
+                    stat(str,&statbuf);
+                else
+                {
+                    lstat(str,&statbuf);
+                }
+
+                int temp = 0;
+                if(args.isB){
+                    temp=statbuf.st_size;
+                    size+=temp;
+                }else{
+                    temp=statbuf.st_blocks*512/args.size;
+                    size+=temp;
+                }
+
                 char string_to_log[100];
                 snprintf(string_to_log, sizeof(string_to_log), "%d\t%s\n", temp, str);
                 i.entry = string_to_log;
                 writeLog(getExecTime(), getpid(), ENTRY, i);
                 printf("%d\t%s\n", temp, str);
-            }
-            //printf("%s\n",dentry->d_name);
-            //printf("size=%d\n",size);
 
+
+
+                /*
+                if(args.isA){
+                    printf("olaelse\n");
+                    char string_to_log[100];
+                    snprintf(string_to_log, sizeof(string_to_log), "%d\t%s\n", temp, str);
+                    i.entry = string_to_log;
+                    writeLog(getExecTime(), getpid(), ENTRY, i);
+                    printf("%d\t%s\n", temp, str);
+                }
+                */
+                //printf("%s\n",dentry->d_name);
+                //printf("size=%d\n",size);
+            }
         }
+
+
     }
 
     return size;

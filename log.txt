@@ -1,7 +1,6 @@
-<<<<<<< HEAD
-351.00 - 11664 - CREATE - ./simpledu --count-links Test 
-6680.00 - 11664 - ENTRY - 156	Test
-=======
-162.00 - 6392 - CREATE - ./simpledu Test -l -s 
-3608.00 - 6392 - ENTRY - 140	Test
->>>>>>> 80fbd2f5375a514cd4e0abbbad0c6e080e10856c
+443.00 - 17677 - CREATE - ./simpledu --count-links -a Test 
+4061.00 - 17682 - ENTRY - 68	Test/Test1/cenas.txt
+5723.00 - 17677 - ENTRY - 52	Test/boas.txt
+5898.00 - 17677 - ENTRY - 68	Test/Test1/cenas.txt
+5973.00 - 17677 - ENTRY - 4	Test/link.txt
+6001.00 - 17677 - ENTRY - 156	Test

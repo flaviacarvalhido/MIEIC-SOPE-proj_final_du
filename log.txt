@@ -1,2 +1,7 @@
+<<<<<<< HEAD
 351.00 - 11664 - CREATE - ./simpledu --count-links Test 
 6680.00 - 11664 - ENTRY - 156	Test
+=======
+162.00 - 6392 - CREATE - ./simpledu Test -l -s 
+3608.00 - 6392 - ENTRY - 140	Test
+>>>>>>> 80fbd2f5375a514cd4e0abbbad0c6e080e10856c

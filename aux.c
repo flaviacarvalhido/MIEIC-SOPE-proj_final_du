@@ -1,6 +1,6 @@
 #include "aux.h"
 
-double getExecTime(struct timeval start){
+double getExecTime(){
     struct timeval stop;
 
     gettimeofday(&stop, NULL);

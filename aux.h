@@ -4,7 +4,9 @@
 #include <stdio.h>
 #include <string.h>
 
+extern struct timeval start;
+
 // Gets elapsed time since start of program
-double getExecTime(struct timeval start);
+double getExecTime();
 
 int confirmExit();

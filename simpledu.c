@@ -28,13 +28,12 @@ char ** readSubDirs(char*directory);
 int receivedSIGINT;
 struct arg args;
 struct info i;
+struct timeval start;
+
 
 int main(int argc, char *argv[], char *envp[]){
-    struct timeval start;
     gettimeofday(&start, NULL);
     char directory[50] = "./Test/Test1";
-
-    //Zaah
 
     resetLog();
 
@@ -62,6 +61,11 @@ int main(int argc, char *argv[], char *envp[]){
     //printf("%s\n",args.path);
     int size_parent=getDirSize(args.path)+4;
     //printf("%d\n",size_parent);
+
+    char string_to_log[100];
+    snprintf(string_to_log, sizeof(string_to_log), "%d\t%s\n", size_parent, args.path);
+    i.entry = string_to_log;
+    writeLog(getExecTime(start), getpid(), ENTRY, i);
     printf("%d\t%s\n", size_parent, args.path);
 
     return 0;
@@ -147,10 +151,16 @@ int getDirSize(char* directory)
                 strcat(str, "/");
                 strcat(str, dentry->d_name);
                 lstat(str,&statbuf);
-                size+=statbuf.st_blocks * 512/args.size+getDirSize(str);
+                int temp=statbuf.st_blocks * 512/args.size+getDirSize(str);
+                size+=temp;
 
-                if(args.isA)
-                    printf("%d\t%s\n", size, str);
+                if(args.isA){
+                    char string_to_log[100];
+                    snprintf(string_to_log, sizeof(string_to_log), "%d\t%s\n", temp, str);
+                    i.entry = string_to_log;
+                    writeLog(getExecTime(start), getpid(), ENTRY, i);
+                    printf("%d\t%s\n", temp, str);
+                }
                 //printf("%s\n",dentry->d_name);
                 //printf("size=%d\n",size);
 
@@ -162,10 +172,18 @@ int getDirSize(char* directory)
             strcat(str,"/");
             strcat(str,dentry->d_name);
             lstat(str,&statbuf);
-            if(!S_ISLNK(statbuf.st_mode))
-                size+=statbuf.st_blocks*512/args.size;
-            if(args.isA)
-                printf("%d\t%s\n", size, str);
+            int temp = 0;
+            if(!S_ISLNK(statbuf.st_mode)){
+                temp=statbuf.st_blocks*512/args.size;
+                size+=temp;
+            }
+            if(args.isA){
+                char string_to_log[100];
+                snprintf(string_to_log, sizeof(string_to_log), "%d\t%s\n", temp, str);
+                i.entry = string_to_log;
+                writeLog(getExecTime(start), getpid(), ENTRY, i);
+                printf("%d\t%s\n", temp, str);
+            }
             //printf("%s\n",dentry->d_name);
             //printf("size=%d\n",size);
 

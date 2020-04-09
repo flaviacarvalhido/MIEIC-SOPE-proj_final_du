@@ -89,7 +89,7 @@ struct arg parser(int argc, char *argv[]){
             strncpy(temp, argv[i]+12, sizeof(argv[i]));
             temp[sizeof(temp)]='\0';  //null character added
 
-            if(atoi(temp)){
+            if(atoi(temp) >= 0){
                 args.depth=atoi(temp);
                 //printf("i worked\n");
             }else{

@@ -89,7 +89,7 @@ struct arg parser(int argc, char *argv[]){
             strncpy(temp, argv[i]+12, sizeof(argv[i]));
             temp[sizeof(temp)]='\0';  //null character added
 
-            if(atoi(temp)){
+            if(atoi(temp) || strcmp(temp,"0") == 0){
                 args.depth=atoi(temp);
                 //printf("i worked\n");
             }else{
@@ -119,6 +119,10 @@ struct arg parser(int argc, char *argv[]){
 
     if(!args.isMax){
         args.depth = 9999;
+    }
+
+    if(args.depth<0){
+        args.error=true;
     }
 
     if(!args.isl){

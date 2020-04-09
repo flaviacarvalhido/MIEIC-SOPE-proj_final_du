@@ -54,7 +54,9 @@ int main(int argc, char *argv[], char *envp[]){
     //du(args.path);
     int depth=args.depth;
 
-    du("./Test",depth);
+    if(depth!=0){
+        du("./Test",depth);
+    }
 
     //prints info of path provided in args
     //printf("%s\n",args.path);

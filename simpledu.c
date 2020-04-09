@@ -55,16 +55,21 @@ int main(int argc, char *argv[], char *envp[]){
     //du(args.path);
     int depth=args.depth;
 
-    if(!args.isS){
-        if(depth!=0){
-            du(directory,depth);
-        }
+    
+    if(depth!=0){
+        du(directory,depth);
     }
+    
     
 
     //prints info of path provided in args
     //printf("%s\n",args.path);
-    int size_parent=getDirSize(args.path)+4;
+    int size_parent;
+    if(args.isB){
+        size_parent=getDirSize(args.path)+4096;
+    }else{
+        size_parent=getDirSize(args.path)+4;
+    }
     //printf("%d\n",size_parent);
 
     char string_to_log[100];
@@ -109,7 +114,12 @@ int du(char * dir, int d){
                 exit(2);
             }
 
-            int mysize = getDirSize(str)+4;
+            int mysize;
+            if(args.isB){
+                mysize = getDirSize(str)+4096;
+            }else{
+                mysize = getDirSize(str)+4;
+            }
 
             //printf("size=%d\n",mysize);
 
@@ -150,14 +160,21 @@ int getDirSize(char* directory)
     {
         if(dentry->d_type == 4)
         {
-            if(dentry->d_name[0]!='.')
+            if(dentry->d_name[0]!='.' && !args.isS)
             {
                 strcpy(str, directory);
                 strcat(str, "/");
                 strcat(str, dentry->d_name);
-                lstat(str,&statbuf);
-                int temp=statbuf.st_blocks * 512/args.size+getDirSize(str);
-                size+=temp;
+                stat(str,&statbuf);
+
+                int temp = 0;
+                if(args.isB){
+                    temp=statbuf.st_size + getDirSize(str);
+                    size+=temp;
+                }else{
+                    temp=statbuf.st_blocks*512/args.size + getDirSize(str);
+                    size+=temp;
+                }
 
                 if(args.isA){
                     char string_to_log[100];
@@ -176,12 +193,23 @@ int getDirSize(char* directory)
             strcpy(str,directory);
             strcat(str,"/");
             strcat(str,dentry->d_name);
-            lstat(str,&statbuf);
+
+            if(args.isL)
+                stat(str,&statbuf);
+            else
+            {
+                lstat(str,&statbuf);
+            }
+
             int temp = 0;
-            if(!S_ISLNK(statbuf.st_mode)){
+            if(args.isB){
+                temp=statbuf.st_size;
+                size+=temp;
+            }else{
                 temp=statbuf.st_blocks*512/args.size;
                 size+=temp;
             }
+
             if(args.isA){
                 char string_to_log[100];
                 snprintf(string_to_log, sizeof(string_to_log), "%d\t%s\n", temp, str);

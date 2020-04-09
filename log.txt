@@ -1,2 +1,2 @@
-195.00 - 4290 - CREATE - ./simpledu -l 
-3767.00 - 4290 - ENTRY - 496	.
+351.00 - 11664 - CREATE - ./simpledu --count-links Test 
+6680.00 - 11664 - ENTRY - 156	Test

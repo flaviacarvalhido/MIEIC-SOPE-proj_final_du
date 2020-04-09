@@ -52,11 +52,12 @@ int main(int argc, char *argv[], char *envp[]){
 
     //int size=getDirSize("./Test")+4;
 
-    du("/home/flavia/Desktop/SOPE/proj_final_du/Test");
+    //du(args.path);
+    du("./Test");
 
     //prints info of path provided in args
-    printf("/home/flavia/Desktop/SOPE/proj_final_du/Test\n");
-    int size_parent=getDirSize("/home/flavia/Desktop/SOPE/proj_final_du/Test");
+    printf("%s\n",args.path);
+    int size_parent=getDirSize(args.path);
     printf("%d\n",size_parent);
 
     return 0;
@@ -68,10 +69,15 @@ int du(char * dir){
     char ** subdirectories=readSubDirs(dir);
     pid_t pids[subdir];
     int status;
+    struct stat buf;
 
 
     for(unsigned int i=0;i<subdir;i++){
 
+        lstat(subdirectories[i],&buf);
+        if(!args.isL && S_ISLNK(buf.st_mode)){
+            continue;
+        }
 
         pids[i] = fork();
 

@@ -8,7 +8,8 @@ struct arg parser(int argc, char *argv[]){
     char temp[100];
     args.error=false;
 
-    if(strcmp(argv[1],"-l") != 0 && strcmp(argv[1],"--count-links")!= 0){
+    
+    if(argc < 2 || (strcmp(argv[1],"-l") != 0 && strcmp(argv[1],"--count-links")!= 0)){
         args.error=true;
         return args;
     }

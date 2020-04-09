@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-171.00 - 3282 - CREATE - ./simpledu 
-=======
-276.00 - 19620 - CREATE - ./simpledu 
->>>>>>> e05ead0873932eb4ed2d17e60ba7eee8f3f2a4dc
+95.00 - 6307 - CREATE - ./simpledu -l Test 

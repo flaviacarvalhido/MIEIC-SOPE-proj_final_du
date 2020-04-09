@@ -23,7 +23,7 @@ void resetSIGINT();
 int calculateBlocks(int size, int block_size);
 void simpleduPrototype(char* directory);
 int getDirSize(char* directory);
-int du(char * dir);
+int du(char * dir,int d);
 char ** readSubDirs(char*directory);
 
 int receivedSIGINT;
@@ -53,7 +53,9 @@ int main(int argc, char *argv[], char *envp[]){
     //int size=getDirSize("./Test")+4;
 
     //du(args.path);
-    du("./Test");
+    int depth=args.depth;
+
+    du("./Test",depth);
 
     //prints info of path provided in args
     printf("%s\n",args.path);
@@ -63,21 +65,25 @@ int main(int argc, char *argv[], char *envp[]){
     return 0;
 }
 
-int du(char * dir){
+int du(char * dir,int d){
 
     int subdir=countSubDirectories(dir);
     char ** subdirectories=readSubDirs(dir);
     pid_t pids[subdir];
     int status;
     struct stat buf;
+    d--;
+    
 
 
     for(unsigned int i=0;i<subdir;i++){
 
+        lstat(subdirectories[i],&buf);
+        if(!args.isL && S_ISLNK(buf.st_mode)){
+            continue;
+        }
 
         pids[i] = fork();
-
-        printf("pid: %d\n",pids[i]);
 
         if(pids[i]==0){ //child
 
@@ -85,7 +91,6 @@ int du(char * dir){
             str[0]='\0';
 
             char * mydir= subdirectories[i];
-            //printf("%s\n",subdirectories[i]);
 
             strcat(str, dir);
             strcat(str, "/");
@@ -93,17 +98,13 @@ int du(char * dir){
 
             printf("str=%s\n",str);
 
-            lstat(str,&buf);
-            if(!args.isL && S_ISLNK(buf.st_mode)){
-                exit(2);
-            }
-
             int mysize = getDirSize(str)+4;
 
             printf("size=%d\n",mysize);
 
-            if(countSubDirectories(str)!=0){
-                du(str);
+            printf("depthfilho:%d\n",d);
+            if(countSubDirectories(str)!=0 && d>0){
+                du(str,d);
             }
 
             exit(99);

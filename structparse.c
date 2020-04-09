@@ -9,15 +9,20 @@ struct arg parser(int argc, char *argv[]){
     args.error=false;
 
     args.isL=false;
+    args.isMax =false;
+    args.isl=false;
 
-    if(argc < 2 || (strcmp(argv[1],"-l") != 0 && strcmp(argv[1],"--count-links")!= 0)){
+    if(argc < 2){
         args.error=true;
         return args;
     }
 
+    for(unsigned int i=1;i<=argc-1;i++){
 
-
-    for(unsigned int i=2;i<=argc-1;i++){
+        if(strcmp(argv[i],"-l") == 0 || strcmp(argv[i],"--count-links")== 0){
+            args.isl=true;
+            continue;
+        }
 
 
         if(strcmp(argv[i],"-a")==0 || strcmp(argv[i],"--all")==0){
@@ -45,7 +50,7 @@ struct arg parser(int argc, char *argv[]){
                 return args;
             }
 
-            
+
             //printf("yes I work -B\n");
             //printf("size: %d",args.size);
             continue;
@@ -110,6 +115,14 @@ struct arg parser(int argc, char *argv[]){
 
     if(!args.isBSize){
         args.size=1024;
+    }
+
+    if(!args.isMax){
+        args.depth = 9999;
+    }
+
+    if(!args.isl){
+        args.error=true;
     }
 
     return args;

@@ -102,13 +102,16 @@ int du(char * dir){
 
             printf("size=%d\n",mysize);
 
-            if(countSubDirectories(str)!=0){
+            printf("depthfilho:%d\n",args.depth);
+            if(countSubDirectories(str)!=0 && args.depth>0){
                 du(str);
             }
 
             exit(99);
 
         }else{  //parent
+           args.depth--;
+           printf("depthpai:%d\n",args.depth);
            pid_t wpid;
            while ((wpid = wait(&status)) > 0);
         }

@@ -15,6 +15,7 @@
 
 struct arg
 {
+    bool isl;
     bool isPath;
     char * path;
     bool isA;

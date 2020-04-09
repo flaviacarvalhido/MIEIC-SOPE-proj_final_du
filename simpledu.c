@@ -55,8 +55,10 @@ int main(int argc, char *argv[], char *envp[]){
     //du(args.path);
     int depth=args.depth;
 
-    if(depth!=0 || !args.isS){
-        du(directory,depth);
+    if(!args.isS){
+        if(depth!=0){
+            du(directory,depth);
+        }
     }
     
 

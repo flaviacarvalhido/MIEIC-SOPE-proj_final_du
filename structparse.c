@@ -19,7 +19,7 @@ struct arg parser(int argc, char *argv[]){
 
     for(unsigned int i=1;i<=argc-1;i++){
 
-        if(strcmp(argv[i],"-l") == 0 && strcmp(argv[i],"--count-links")== 0){
+        if(strcmp(argv[i],"-l") == 0 || strcmp(argv[i],"--count-links")== 0){
             args.isl=true;
             continue;
         }

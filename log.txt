@@ -1,2 +1,1 @@
-270.00 - 5119 - CREATE - ./simpledu -l 
-392.00 - 5119 - EXIT - -1
+126.00 - 6411 - CREATE - ./simpledu Test -l -L 

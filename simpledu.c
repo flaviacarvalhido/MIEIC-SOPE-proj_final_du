@@ -74,10 +74,6 @@ int du(char * dir){
 
     for(unsigned int i=0;i<subdir;i++){
 
-        lstat(subdirectories[i],&buf);
-        if(!args.isL && S_ISLNK(buf.st_mode)){
-            continue;
-        }
 
         pids[i] = fork();
 
@@ -87,6 +83,10 @@ int du(char * dir){
             str[0]='\0';
 
             char * mydir= subdirectories[i];
+<<<<<<< HEAD
+=======
+            //printf("%s\n",subdirectories[i]);
+>>>>>>> 9853e5d2d103cb25acb5cc8431049549a60b0003
 
             strcat(str, dir);
             strcat(str, "/");
@@ -94,15 +94,29 @@ int du(char * dir){
 
             printf("str=%s\n",str);
 
+            lstat(str,&buf);
+            if(!args.isL && S_ISLNK(buf.st_mode)){
+                exit(2);
+            }
+
             int mysize = getDirSize(str)+4;
 
+<<<<<<< HEAD
             if(countSubDirectories(str)!=0){
+=======
+            printf("size=%d\n",mysize);
+
+            printf("depthfilho:%d\n",args.depth);
+            if(countSubDirectories(str)!=0 && args.depth>0){
+>>>>>>> 9853e5d2d103cb25acb5cc8431049549a60b0003
                 du(str);
             }
 
             exit(99);
 
         }else{  //parent
+           args.depth--;
+           printf("depthpai:%d\n",args.depth);
            pid_t wpid;
            while ((wpid = wait(&status)) > 0);
         }

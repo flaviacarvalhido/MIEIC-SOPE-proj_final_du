@@ -17,8 +17,6 @@ struct arg parser(int argc, char *argv[]){
         return args;
     }
 
-
-
     for(unsigned int i=1;i<=argc-1;i++){
 
         if(strcmp(argv[i],"-l") == 0 || strcmp(argv[i],"--count-links")== 0){
@@ -52,7 +50,7 @@ struct arg parser(int argc, char *argv[]){
                 return args;
             }
 
-            
+
             //printf("yes I work -B\n");
             //printf("size: %d",args.size);
             continue;

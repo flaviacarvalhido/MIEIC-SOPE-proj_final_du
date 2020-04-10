@@ -14,6 +14,9 @@
 #include "aux.h"
 #include <sys/wait.h>
 
+#define READ 0
+#define WRITE 1
+
 void sigint_handler(int sigint);
 
 int countSubDirectories(char* directory);
@@ -30,7 +33,6 @@ int receivedSIGINT;
 struct arg args;
 struct info i;
 struct timeval start;
-
 
 int main(int argc, char *argv[], char *envp[]){
     gettimeofday(&start, NULL);
@@ -89,13 +91,22 @@ int du(char * dir, int d){
     pid_t pid;
     int status;
     struct stat buf;
+    char output[300];
+    int fd[2];
+    int n;
     d--;
 
     for(unsigned int i=0;i<subdir;i++){
 
+        if(pipe(fd) == -1) {
+            perror("Pipe opening failed\n");
+            exit(5);
+        }
+
         pid = fork();
 
         if(pid==0){ //child
+            close(fd[READ]);
 
             char str[3000];
             str[0]='\0';
@@ -112,10 +123,18 @@ int du(char * dir, int d){
             lstat(str,&buf);
 
             if(!args.isL && S_ISLNK(buf.st_mode) && args.isA){
-                if(args.isB)
-                    printf("%ld\t%s\n", buf.st_size, str);
-                else
-                    printf("%ld\t%s\n", buf.st_size/args.size, str);
+                if(args.isB){
+                    snprintf(output, sizeof(output), "%ld\t%s\n", buf.st_size, str);
+                    printf("%s\n", output);
+                    write(fd[WRITE], output, strlen(output)+1);
+                    //printf("%ld\t%s\n", buf.st_size, str);
+                }
+                else{
+                    snprintf(output, sizeof(output), "%ld\t%s\n", buf.st_size/args.size, str);
+                    printf("%s\n", output);
+                    write(fd[WRITE], output, strlen(output)+1);
+                    //printf("%ld\t%s\n", buf.st_size/args.size, str);
+                }
             }
 
             if(!args.isL && S_ISLNK(buf.st_mode)){
@@ -125,21 +144,26 @@ int du(char * dir, int d){
             int mysize;
             if(args.isB){
                 if(args.isA && S_ISREG(buf.st_mode) )
-                mysize = getFileSize(str);
+                    mysize = getFileSize(str);
                 else
-                mysize = getDirSize(str)+4096;
+                    mysize = getDirSize(str)+4096;
             }
             else{
                 if(args.isA && S_ISREG(buf.st_mode) ){
                     mysize = getFileSize(str);
                 }
                 else
-                mysize = getDirSize(str)+4;
+                    mysize = getDirSize(str)+4;
             }
 
-            //printf("size=%d\n",mysize);
+            snprintf(output, sizeof(output), "%d\t%s\n", mysize, str);
+            printf("output: %s\n", output);
+            int n = write(fd[WRITE], output, strlen(output));
+            printf("Written %d bytes\n", n);
 
-            printf("%d\t%s\n", mysize, str);
+            //printf("%d\t%s\n", mysize, str);
+
+            close(fd[WRITE]);
 
 
             //printf("depthfilho:%d\n",d);
@@ -149,9 +173,15 @@ int du(char * dir, int d){
 
             exit(99);
 
-        }else{  //parent
-            //args.depth--;
-            //printf("depthpai:%d\n",args.depth);
+        }
+        else{  //parent
+            close(fd[WRITE]);
+            char received_data[1000];
+
+            read(fd[READ], received_data, n);
+
+            close(fd[READ]);
+
             pid_t wpid;
             while ((wpid = wait(&status)) > 0);
         }
@@ -210,7 +240,7 @@ int getDirSize(char* directory)
                 lstat(str,&statbuf);
                 if(S_ISLNK(statbuf.st_mode)){
                     if(args.isB){
-                        temp=statbuf.st_size + getDirSize(str)+4096;
+                        temp=/*statbuf.st_size + */ getDirSize(str)+4096;
                         size+=temp;
                     }
                     else{

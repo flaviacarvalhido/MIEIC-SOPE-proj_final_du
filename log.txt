@@ -1,2 +1,2 @@
-281.00 - 5201 - CREATE - ./simpledu -l -a Test 
-7174.00 - 5201 - ENTRY - 184	Test
+144.00 - 10293 - CREATE - ./simpledu Test -l 
+1091.00 - 10293 - ENTRY - 184	Test

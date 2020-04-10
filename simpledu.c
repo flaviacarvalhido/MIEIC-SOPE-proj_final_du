@@ -25,7 +25,7 @@ void resetSIGINT();
 int calculateBlocks(int size, int block_size);
 void simpleduPrototype(char* directory);
 int getDirSize(char* directory);
-int du(char * dir,int d);
+int du(char * dir, int d, int argc, char *argv[]);
 char ** readSubDirs(char*directory);
 int getFileSize(char* file);
 
@@ -61,23 +61,20 @@ int main(int argc, char *argv[], char *envp[]){
 
 
     if(depth!=0){
-        du(args.path,depth);
+        du(args.path,depth, argc, argv);
     }
 
-
-
-    //prints info of path provided in args
-    //printf("%s\n",args.path);
     int size_parent;
     if(args.isB){
         size_parent=getDirSize(args.path)+4096;
-    }else{
+    }
+    else{
         size_parent=getDirSize(args.path)+4;
     }
     //printf("%d\n",size_parent);
 
     char string_to_log[100];
-    snprintf(string_to_log, sizeof(string_to_log), "%d\t%s\n", size_parent, args.path);
+    snprintf(string_to_log, sizeof(string_to_log), "%d %s\n", size_parent, args.path);
     i.entry = string_to_log;
     writeLog(getExecTime(), getpid(), ENTRY, i);
     printf("%d\t%s\n", size_parent, args.path);
@@ -85,7 +82,7 @@ int main(int argc, char *argv[], char *envp[]){
     return 0;
 }
 
-int du(char * dir, int d){
+int du(char * dir, int d, int argc, char *argv[]){
 
     int subdir=countSubDirectories(dir);
     char ** subdirectories=readSubDirs(dir);
@@ -112,27 +109,41 @@ int du(char * dir, int d){
             str[0]='\0';
 
             char * mydir= subdirectories[i];
-            //printf("%s\n", mydir);
 
             strcat(str, dir);
             strcat(str, "/");
             strcat(str, mydir);
 
+            struct info info;
+            char new_path[300];
+            new_path[0] = '\0';
+            strcat(new_path, str);
+
+            info.path = new_path;
+            loadArgv(&info,argv, argc);
+
+            writeLog(getExecTime(), getpid(), CREATE_FORK, info);
+
             //printf("str=%s\n",str);
 
             lstat(str,&buf);
-            
+
 
             if(!args.isL && S_ISLNK(buf.st_mode) && args.isA){
                 if(args.isB){
+                    struct info info;
                     snprintf(output, sizeof(output), "%ld\t%s\n", buf.st_size, str);
-                    //printf("%s\n", output);
+                    info.sent_from_pipe = output;
+                    writeLog(getExecTime(), getpid(), SEND_PIPE, info);
+
                     n=write(fd[WRITE], output, sizeof(output)+1);
                     //printf("%ld\t%s\n", buf.st_size, str);
                 }
                 else{
+                    struct info info;
                     snprintf(output, sizeof(output), "%ld\t%s\n", buf.st_size/args.size, str);
-                    //printf("%s\n", output);
+                    info.sent_from_pipe = output;
+                    writeLog(getExecTime(), getpid(), SEND_PIPE, info);
                     n=write(fd[WRITE], output, sizeof(output)+1);
                     //printf("%ld\t%s\n", buf.st_size/args.size, str);
                 }
@@ -169,10 +180,13 @@ int du(char * dir, int d){
                     {
                         mysize = getDirSize(str)+4;
                     }
-                }   
+                }
             }
 
             snprintf(output, sizeof(output), "%d\t%s\n", mysize, str);
+
+            info.sent_from_pipe = output;
+            writeLog(getExecTime(), getpid(), SEND_PIPE, info);
             //printf("output: %s\n", output);
             n= write(fd[WRITE], output, sizeof(output)+1);
             //printf("%d\n",n);
@@ -184,7 +198,7 @@ int du(char * dir, int d){
 
             //printf("depthfilho:%d\n",d);
             if(countSubDirectories(str)!=0 && d>0){
-                du(str,d);
+                du(str, d, argc, argv);
             }
 
             exit(99);
@@ -195,7 +209,7 @@ int du(char * dir, int d){
             pid_t wpid;
             while ((wpid = wait(&status)) > 0);
 
-            
+
 
 
             close(fd[WRITE]);
@@ -203,7 +217,14 @@ int du(char * dir, int d){
 
             int r;
             r = read(fd[READ], received_data, 1000);
-            
+
+            struct info info;
+            info.received_from_pipe = received_data;
+            info.entry = received_data;
+            writeLog(getExecTime(), getpid(), RECV_PIPE, info);
+            writeLog(getExecTime(), getpid(), ENTRY, info);
+
+
             //printf("n is %d\n",n);
             //printf("read returns %d\n",r);
             printf("%s",received_data);
@@ -239,7 +260,7 @@ int getDirSize(char* directory)
 
             if(args.isL){
                 lstat(str,&statbuf);
-                
+
                 if(S_ISLNK(statbuf.st_mode)){
                     stat(str,&statbuf);
                     if(S_ISDIR(statbuf.st_mode)){
@@ -289,7 +310,7 @@ int getDirSize(char* directory)
         }
         else
         {
-            
+
 
             if( (strcmp(dentry->d_name,"..")!=0)  && !args.isS && (strlen(dentry->d_name)>1 && !args.isS) )
             {
@@ -315,7 +336,7 @@ int getDirSize(char* directory)
 
 
         }
-        
+
 
 
         //printf("%s\n",dentry->d_name);

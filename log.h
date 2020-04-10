@@ -7,8 +7,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef enum {CREATE, EXIT, RECV_SIGNAL, SEND_SIGNAL, RECV_PIPE, SEND_PIPE, ENTRY} action_type;
-static char* action_type_string[] = {"CREATE", "EXIT", "RECV_SIGNAL", "SEND_SIGNAL", "RECV_PIPE", "SEND_PIPE", "ENTRY"};
+typedef enum {CREATE, CREATE_FORK, EXIT, RECV_SIGNAL, SEND_SIGNAL, RECV_PIPE, SEND_PIPE, ENTRY} action_type;
+static char* action_type_string[] = {"CREATE", "CREATE", "EXIT", "RECV_SIGNAL", "SEND_SIGNAL", "RECV_PIPE", "SEND_PIPE", "ENTRY"};
 
 struct info {
    char* argv[50];
@@ -23,7 +23,8 @@ struct info {
    char* received_from_pipe;
    char* sent_from_pipe;
 
-   char* entry; // Number of bytes
+   char* entry;
+   char* path;
 };
 
 int writeLog(double instant, pid_t pid, action_type action, struct info info);

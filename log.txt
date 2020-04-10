@@ -1,2 +1,22 @@
-189.00 - 28427 - CREATE - ./simpledu -l Test -L -a 
-11928.00 - 28427 - ENTRY - 380	Test
+295.00 - 7797 - CREATE - ./simpledu -l Test 
+811.00 - 7798 - CREATE - Test/Test3 -l Test 
+1050.00 - 7798 - SEND_PIPE - 4	Test/Test3
+1456.00 - 7797 - RECV_PIPE - 4	Test/Test3
+1522.00 - 7797 - ENTRY - 4	Test/Test3
+1859.00 - 7799 - CREATE - Test/Test1 -l Test 
+2096.00 - 7799 - SEND_PIPE - 72	Test/Test1
+2674.00 - 7797 - RECV_PIPE - 72	Test/Test1
+2749.00 - 7797 - ENTRY - 72	Test/Test1
+3127.00 - 7800 - CREATE - Test/Test2 -l Test 
+3509.00 - 7800 - SEND_PIPE - 56	Test/Test2
+3986.00 - 7801 - CREATE - Test/Test2/Test2.1 -l Test 
+4324.00 - 7801 - SEND_PIPE - 52	Test/Test2/Test2.1
+4909.00 - 7802 - CREATE - Test/Test2/Test2.1/Test2.1.1 -l Test 
+5156.00 - 7802 - SEND_PIPE - 4	Test/Test2/Test2.1/Test2.1.1
+5524.00 - 7801 - RECV_PIPE - 4	Test/Test2/Test2.1/Test2.1.1
+5595.00 - 7801 - ENTRY - 4	Test/Test2/Test2.1/Test2.1.1
+6099.00 - 7800 - RECV_PIPE - 52	Test/Test2/Test2.1
+6162.00 - 7800 - ENTRY - 52	Test/Test2/Test2.1
+6565.00 - 7797 - RECV_PIPE - 56	Test/Test2
+6632.00 - 7797 - ENTRY - 56	Test/Test2
+6951.00 - 7797 - ENTRY - 188 Test

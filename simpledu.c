@@ -15,7 +15,6 @@
 #include "log.h"
 #include "aux.h"
 
-
 #define READ 0
 #define WRITE 1
 
@@ -26,7 +25,6 @@ void sigstop_handler(int sigstop);
 
 int countSubDirectories(char* directory);
 int countSubDirectoriesRecursive(char* directory);
-void resetSIGINT();
 int calculateBlocks(int size, int block_size);
 void simpleduPrototype(char* directory);
 int getDirSize(char* directory);
@@ -34,7 +32,6 @@ int du(char * dir, int d, int argc, char *argv[]);
 char ** readSubDirs(char*directory);
 int getFileSize(char* file);
 
-int receivedSIGINT;
 struct arg args;
 struct info i;
 struct timeval start;
@@ -100,12 +97,16 @@ int du(char * dir, int d, int argc, char *argv[]){
 
         if(pipe(fd) == -1) {
             perror("Pipe opening failed\n");
+
+            struct info info;
+            info.exit_code = 5;
+            writeLog(getExecTime(), getpid(), EXIT, info);
             exit(5);
         }
 
         pid = fork();
 
-        if(pid==0){ //child
+        if(pid==0){ // child
 
             if (getppid() == parent_pid)
             {
@@ -159,6 +160,9 @@ int du(char * dir, int d, int argc, char *argv[]){
             }
 
             if(!args.isL && S_ISLNK(buf.st_mode)){
+                struct info info;
+                info.exit_code = 2;
+                writeLog(getExecTime(), getpid(), EXIT, info);
                 exit(2);
             }
 
@@ -205,6 +209,8 @@ int du(char * dir, int d, int argc, char *argv[]){
                 du(str, d, argc, argv);
             }
 
+            info.exit_code = 99;
+            writeLog(getExecTime(), getpid(), EXIT, info);
             exit(99);
 
         }
@@ -213,7 +219,6 @@ int du(char * dir, int d, int argc, char *argv[]){
             {
                 child_pid = pid;
             }
-            //sleep(2);
             pid_t wpid;
             while ((wpid = wait(&status)) > 0);
 
@@ -236,13 +241,10 @@ int du(char * dir, int d, int argc, char *argv[]){
             close(fd[READ]);
         }
     }
-
-
 }
 
-// Auxiliary Functions to be placed elsewhere
 
-//always add +4 when called to account for current directory
+// Always add +4 when called to account for current directory
 int getDirSize(char* directory){
     struct stat statbuf;
     DIR *source_dir;
@@ -301,11 +303,6 @@ int getDirSize(char* directory){
 
             else{
                 lstat(str,&statbuf);
-                // printf("STR: %s\n", str);
-                // printf("IS LNK: %d\n", S_ISLNK(statbuf.st_mode));
-                // printf("IS DIR: %d\n", S_ISDIR(statbuf.st_mode));
-                // printf("IS REG: %d\n", S_ISREG(statbuf.st_mode));
-
 
                 if(args.isB){
                     temp=statbuf.st_size;
@@ -482,8 +479,6 @@ char ** readSubDirs(char*directory){
 void sigint_handler(int sigint){
     if(getpid() == parent_pid)
     {
-        if (sigint == SIGINT)
-            receivedSIGINT = 1;
 
         struct info info;
         info.received_signal = "SIGINT";
@@ -491,8 +486,6 @@ void sigint_handler(int sigint){
         killpg(-child_pid, SIGSTOP);
         info.sent_signal = "SIGSTOP";
         writeLog(getExecTime(), getpid(), SEND_SIGNAL, info);
-        //sleep(1);
-        //killpg(child_pid, SIGSTOP);
         if (confirmExit())
         {
             info.sent_signal = "SIGTERM";
@@ -513,6 +506,9 @@ void sigterm_handler(int sigterm)
     struct info info;
     info.received_signal = "SIGTERM";
     writeLog(getExecTime(), getpid(), RECV_SIGNAL, info);
+
+    info.exit_code = 15;
+    writeLog(getExecTime(), getpid(), RECV_SIGNAL, info);
     exit(15);
 }
 
@@ -529,10 +525,6 @@ void sigstop_handler(int sigstop)
     info.received_signal = "SIGSTOP";
     writeLog(getExecTime(), getpid(), RECV_SIGNAL, info);
     pause();
-}
-
-void resetSIGINT(){
-    receivedSIGINT = 0;
 }
 
 int getFileSize(char* file){

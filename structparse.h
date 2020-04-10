@@ -29,6 +29,5 @@ struct arg
     bool error;
 };
 
+// Function to parse the command line arguments
 struct arg parser(int argc, char *argv[]);
-
-

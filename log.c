@@ -46,7 +46,7 @@ int writeLog(double instant, pid_t pid, action_type action, struct info info){
             break;
         }
         case EXIT: {
-            snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s - %d", instant, (int)pid, action_string, info.exit_code);
+            snprintf(string_to_write, sizeof(string_to_write), "%.2f - %d - %s - %d\n", instant, (int)pid, action_string, info.exit_code);
             break;
         }
         case RECV_SIGNAL: {

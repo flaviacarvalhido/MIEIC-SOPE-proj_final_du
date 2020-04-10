@@ -1,7 +1,6 @@
 #include "structparse.h"
 
 
-
 struct arg parser(int argc, char *argv[]){
 
     struct arg args;
@@ -27,7 +26,6 @@ struct arg parser(int argc, char *argv[]){
             continue;
         }
 
-
         if(strcmp(argv[i],"-a")==0 || strcmp(argv[i],"--all")==0){
             args.isA=true;
             continue;
@@ -41,7 +39,6 @@ struct arg parser(int argc, char *argv[]){
             i++;
             args.isBSize=true;
 
-
             if(atoi(argv[i])){
                 args.size=atoi(argv[i]);
             }else{
@@ -51,7 +48,7 @@ struct arg parser(int argc, char *argv[]){
 
             continue;
         }
-        //another argument for -B size
+        // Another argument for -B size
         if(strstr(argv[i], "--block-size=") != NULL){
             args.isBSize=true;
             strncpy(temp, argv[i]+13, sizeof(argv[i]));

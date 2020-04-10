@@ -27,8 +27,13 @@ struct info {
    char* path;
 };
 
+// Writes to the log file
 int writeLog(double instant, pid_t pid, action_type action, struct info info);
+
+// Clears the log file
 void resetLog();
+
+// Determines the directory by checking the LOG_FILENAME environmental variable
 char* getDirectoryEnv();
 
 // Loads the struct info with the command line arguments

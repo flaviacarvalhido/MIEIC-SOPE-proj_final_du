@@ -105,8 +105,18 @@ struct arg parser(int argc, char *argv[]){
             continue;
         }
 
-        args.isPath=true;
-        args.path=argv[i];
+
+
+        struct stat buf;
+        stat(argv[i],&buf);
+        if(S_ISDIR(buf.st_mode)){
+            args.isPath=true;
+            args.path=argv[i];
+        }else{
+            args.error=true;
+            return args;
+        }
+
         //printf("path is : %s",args.path);
 
     }

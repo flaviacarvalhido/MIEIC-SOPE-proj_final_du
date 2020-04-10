@@ -480,27 +480,31 @@ char ** readSubDirs(char*directory){
 }
 
 void sigint_handler(int sigint){
-    if (sigint == SIGINT)
-        receivedSIGINT = 1;
-
-    struct info info;
-    info.received_signal = "SIGINT";
-    writeLog(getExecTime(), getpid(), RECV_SIGNAL, info);
-
-    info.sent_signal = "SIGSTOP";
-    writeLog(getExecTime(), getpid(), SEND_SIGNAL, info);
-    killpg(child_pid, SIGSTOP);
-    if (confirmExit())
+    if(getpid() == parent_pid)
     {
-        info.sent_signal = "SIGTERM";
+        if (sigint == SIGINT)
+            receivedSIGINT = 1;
+
+        struct info info;
+        info.received_signal = "SIGINT";
+        writeLog(getExecTime(), getpid(), RECV_SIGNAL, info);
+        killpg(-child_pid, SIGSTOP);
+        info.sent_signal = "SIGSTOP";
         writeLog(getExecTime(), getpid(), SEND_SIGNAL, info);
-        kill(0, SIGTERM);
-    }
-    else
-    {
-        info.sent_signal = "SIGCONT";
-        writeLog(getExecTime(), getpid(), SEND_SIGNAL, info);
-        kill(0, SIGCONT);
+        //sleep(1);
+        //killpg(child_pid, SIGSTOP);
+        if (confirmExit())
+        {
+            info.sent_signal = "SIGTERM";
+            writeLog(getExecTime(), getpid(), SEND_SIGNAL, info);
+            kill(0, SIGTERM);
+        }
+        else
+        {
+            info.sent_signal = "SIGCONT";
+            writeLog(getExecTime(), getpid(), SEND_SIGNAL, info);
+            kill(0, SIGCONT);
+        }
     }
 }
 

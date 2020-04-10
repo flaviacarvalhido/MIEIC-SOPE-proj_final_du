@@ -9,9 +9,9 @@ double getExecTime(){
 
 int confirmExit(){
     char response[50];
-
+    response[0] = '\0';
     do {
-        printf("Do you wish to terminate the program? (Yes/No)\n");
+        printf("\nDo you wish to terminate the program? (Yes/No)\n");
         scanf("%s", response);
     } while( (strcmp(response,"Yes") != 0) && (strcmp(response,"yes") != 0) &&
                 (strcmp(response,"Y") != 0) && (strcmp(response,"y") != 0) &&

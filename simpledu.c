@@ -152,7 +152,7 @@ int du(char * dir, int d, int argc, char *argv[]){
                 }
                 else{
                     struct info info;
-                    snprintf(output, sizeof(output), "%fd\t%s\n", ceil(buf.st_blocks*512/args.size), str);
+                    snprintf(output, sizeof(output), "%d\t%s\n", (int)ceil(buf.st_blocks*512/args.size), str);
                     info.sent_from_pipe = output;
                     writeLog(getExecTime(), getpid(), SEND_PIPE, info);
                     n=write(fd[WRITE], output, sizeof(output)+1);
@@ -215,11 +215,10 @@ int du(char * dir, int d, int argc, char *argv[]){
             {
                 child_pid = pid;
             }
-
+            sleep(2);
             pid_t wpid;
             while ((wpid = wait(&status)) > 0);
             
-
             close(fd[WRITE]);
             char received_data[1000];
 

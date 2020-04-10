@@ -198,7 +198,7 @@ int du(char * dir, int d, int argc, char *argv[]){
             info.sent_from_pipe = output;
             writeLog(getExecTime(), getpid(), SEND_PIPE, info);
             n= write(fd[WRITE], output, sizeof(output)+1);
-          
+
 
             close(fd[WRITE]);
 
@@ -333,7 +333,7 @@ int getDirSize(char* directory){
                     size+=temp;
                 }
 
-                
+
             }
 
 
@@ -488,7 +488,7 @@ void sigint_handler(int sigint){
         receivedSIGINT = 1;
 
     struct info info;
-    info.recv_signal = "SIGINT";
+    info.received_signal = "SIGINT";
     writeLog(getExecTime(), getpid(), RECV_SIGNAL, info);
 
     info.sent_signal = "SIGSTOP";
@@ -508,11 +508,10 @@ void sigint_handler(int sigint){
     }
 }
 
-<<<<<<< HEAD
 void sigterm_handler(int sigterm)
 {
     struct info info;
-    info.recv_signal = "SIGTERM";
+    info.received_signal = "SIGTERM";
     writeLog(getExecTime(), getpid(), RECV_SIGNAL, info);
     exit(15);
 }
@@ -520,24 +519,15 @@ void sigterm_handler(int sigterm)
 void sigcont_handler(int sigcont)
 {
     struct info info;
-    info.recv_signal = "SIGCONT";
+    info.received_signal = "SIGCONT";
     writeLog(getExecTime(), getpid(), RECV_SIGNAL, info);
 }
 
 void sigstop_handler(int sigstop)
 {
     struct info info;
-    info.recv_signal = "SIGSTOP";
+    info.received_signal = "SIGSTOP";
     writeLog(getExecTime(), getpid(), RECV_SIGNAL, info);
-=======
-void sigterm_handler(int sigterm){
-    exit(15);
-}
-
-void sigcont_handler(int sigcont){}
-
-void sigstop_handler(int sigstop){
->>>>>>> 5288d76bd0bb85807afc65c662132c4568be3d15
     pause();
 }
 

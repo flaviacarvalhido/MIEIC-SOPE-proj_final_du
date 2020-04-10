@@ -1,22 +1,22 @@
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-315.00 - 5057 - CREATE - ./simpledu -l Test -B 256 
-966.00 - 5058 - CREATE - Test/Test1 -l Test -B 256 
-1250.00 - 5058 - SEND_PIPE - 288	Test/Test1
-1796840.00 - 5057 - RECV_PIPE - 288	Test/Test1
-1796880.00 - 5057 - ENTRY - 288	Test/Test1
-1797016.00 - 5059 - CREATE - Test/Test3 -l Test -B 256 
-1797096.00 - 5059 - SEND_PIPE - 16	Test/Test3
-=======
-<<<<<<< HEAD
-200.00 - 29562 - CREATE - ./simpledu -l /home/flavia/Desktop 
-190000.00 - 29562 - ENTRY - 5268	/home/flavia/Desktop
-=======
-<<<<<<< HEAD
-=======
-167.00 - 3642 - CREATE - ./simpledu -l Test 
->>>>>>> 47fddbbe440c78bfc160f819ed71232a9a360877
->>>>>>> 9572cfbfeed4a5d20aaf2c14963eca3a2ec823a8
->>>>>>> d02c37f3af12111d2e5a0b11b0835d95bf31671e
->>>>>>> 5288d76bd0bb85807afc65c662132c4568be3d15
+268.00 - 10243 - CREATE - ./simpledu -l Test -b 
+906.00 - 10244 - CREATE - Test/Test3 -l Test -b 
+1167.00 - 10244 - SEND_PIPE - 4096	Test/Test3
+1646.00 - 10243 - RECV_PIPE - 4096	Test/Test3
+1738.00 - 10243 - ENTRY - 4096	Test/Test3
+2165.00 - 10245 - CREATE - Test/Test1 -l Test -b 
+2418.00 - 10245 - SEND_PIPE - 71962	Test/Test1
+2801.00 - 10243 - RECV_PIPE - 71962	Test/Test1
+2867.00 - 10243 - ENTRY - 71962	Test/Test1
+3271.00 - 10246 - CREATE - Test/Test2 -l Test -b 
+3620.00 - 10246 - SEND_PIPE - 56353	Test/Test2
+4235.00 - 10247 - CREATE - Test/Test2/Test2.1 -l Test -b 
+4594.00 - 10247 - SEND_PIPE - 52257	Test/Test2/Test2.1
+5161.00 - 10249 - CREATE - Test/Test2/Test2.1/Test2.1.1 -l Test -b 
+5466.00 - 10249 - SEND_PIPE - 4096	Test/Test2/Test2.1/Test2.1.1
+5990.00 - 10247 - RECV_PIPE - 4096	Test/Test2/Test2.1/Test2.1.1
+6081.00 - 10247 - ENTRY - 4096	Test/Test2/Test2.1/Test2.1.1
+6532.00 - 10246 - RECV_PIPE - 52257	Test/Test2/Test2.1
+6623.00 - 10246 - ENTRY - 52257	Test/Test2/Test2.1
+7082.00 - 10243 - RECV_PIPE - 56353	Test/Test2
+7161.00 - 10243 - ENTRY - 56353	Test/Test2
+7596.00 - 10243 - ENTRY - 188680 Test

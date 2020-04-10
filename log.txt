@@ -1,1 +1,7 @@
-167.00 - 3642 - CREATE - ./simpledu -l Test 
+315.00 - 5057 - CREATE - ./simpledu -l Test -B 256 
+966.00 - 5058 - CREATE - Test/Test1 -l Test -B 256 
+1250.00 - 5058 - SEND_PIPE - 288	Test/Test1
+1796840.00 - 5057 - RECV_PIPE - 288	Test/Test1
+1796880.00 - 5057 - ENTRY - 288	Test/Test1
+1797016.00 - 5059 - CREATE - Test/Test3 -l Test -B 256 
+1797096.00 - 5059 - SEND_PIPE - 16	Test/Test3

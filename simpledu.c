@@ -77,7 +77,7 @@ int main(int argc, char *argv[], char *envp[]){
         size_parent=getDirSize(args.path)+4096;
     }
     else{
-        size_parent=getDirSize(args.path)+4;
+        size_parent=getDirSize(args.path)+ceil(4096/args.size);
     }
     //printf("%d\n",size_parent);
 
@@ -160,7 +160,7 @@ int du(char * dir, int d, int argc, char *argv[]){
                 }
                 else{
                     struct info info;
-                    snprintf(output, sizeof(output), "%ld\t%s\n", buf.st_size/args.size, str);
+                    snprintf(output, sizeof(output), "%fd\t%s\n", ceil(buf.st_blocks*512/args.size), str);
                     info.sent_from_pipe = output;
                     writeLog(getExecTime(), getpid(), SEND_PIPE, info);
                     n=write(fd[WRITE], output, sizeof(output)+1);
@@ -197,7 +197,7 @@ int du(char * dir, int d, int argc, char *argv[]){
                        mysize=getFileSize(str);
                     else
                     {
-                        mysize = getDirSize(str)+4;
+                        mysize = getDirSize(str)+ceil(4096/args.size);
                     }
                 }
             }
@@ -236,7 +236,6 @@ int du(char * dir, int d, int argc, char *argv[]){
             action.sa_flags = 0;*/
 
             //sigaction(SIGINT,&action,NULL);
-
 
             while ((wpid = wait(&status)) > 0);
             
@@ -299,7 +298,7 @@ int getDirSize(char* directory)
                             size+=temp;
                         }
                         else{
-                            temp=statbuf.st_blocks*512/args.size + getDirSize(str)+4;
+                            temp=ceil(statbuf.st_blocks*512/args.size) + getDirSize(str)+ceil(4096/args.size);
                             size+=temp;
                         }
                     }else{
@@ -308,7 +307,7 @@ int getDirSize(char* directory)
                             size+=temp;
                         }
                         else{
-                            temp=statbuf.st_blocks*512/args.size /*getFileSize(str)+4*/;
+                            temp=ceil(statbuf.st_blocks*512/args.size) /*getFileSize(str)+4*/;
                             size+=temp;
                         }
                     }
@@ -319,7 +318,7 @@ int getDirSize(char* directory)
                         size+=temp;
                     }
                     else{
-                        temp=statbuf.st_blocks*512/args.size;
+                        temp=ceil(statbuf.st_blocks*512/args.size);
                         size+=temp;
                     }
                 }
@@ -332,7 +331,7 @@ int getDirSize(char* directory)
                     size+=temp;
                 }
                 else{
-                    temp=statbuf.st_blocks*512/args.size;
+                    temp=ceil(statbuf.st_blocks*512/args.size);
                     size+=temp;
                 }
             }
@@ -354,7 +353,7 @@ int getDirSize(char* directory)
                     temp=statbuf.st_size + getDirSize(str);
                     size+=temp;
                 }else{
-                    temp=statbuf.st_blocks*512/args.size + getDirSize(str);
+                    temp=ceil(statbuf.st_blocks*512/args.size) + getDirSize(str);
                     size+=temp;
                 }
 
@@ -552,5 +551,5 @@ int getFileSize(char* file){
     if(args.isB)
     return statbuf.st_size;
     else
-    return statbuf.st_blocks*512/args.size;
+    return ceil(statbuf.st_blocks*512/args.size);
 }

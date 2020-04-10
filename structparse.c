@@ -88,8 +88,6 @@ struct arg parser(int argc, char *argv[]){
             continue;
         }
 
-
-
         struct stat buf;
         stat(argv[i],&buf);
         if(S_ISDIR(buf.st_mode)){
@@ -125,6 +123,9 @@ struct arg parser(int argc, char *argv[]){
     if(args.isA && args.isS){
         args.error=true;
     }
+
+    if(args.isB && args.isBSize)
+        args.error=true;
 
     return args;
 }

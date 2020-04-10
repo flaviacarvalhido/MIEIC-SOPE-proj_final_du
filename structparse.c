@@ -8,6 +8,7 @@ struct arg parser(int argc, char *argv[]){
     char temp[100];
     args.error=false;
 
+    args.isA=false;
     args.isL=false;
     args.isMax =false;
     args.isl=false;
@@ -134,6 +135,6 @@ struct arg parser(int argc, char *argv[]){
     if(args.isA && args.isS){
         args.error=true;
     }
-    
+
     return args;
 }

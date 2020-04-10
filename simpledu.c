@@ -121,9 +121,7 @@ int du(char * dir, int d){
             //printf("str=%s\n",str);
 
             lstat(str,&buf);
-            printf("ISDIR: %d\n",S_ISDIR(buf.st_mode));
-            printf("ISREG: %d\n",S_ISREG(buf.st_mode));
-            printf("ISLNK: %d\n",S_ISLNK(buf.st_mode));
+            
 
             if(!args.isL && S_ISLNK(buf.st_mode) && args.isA){
                 if(args.isB){
@@ -148,15 +146,30 @@ int du(char * dir, int d){
             if(args.isB){
                 if(args.isA && S_ISREG(buf.st_mode) )
                     mysize = getFileSize(str);
-                else
-                    mysize = getDirSize(str)+4096;
+                else{
+                    stat(str,&buf);
+                    if(S_ISREG(buf.st_mode))
+                       mysize=getFileSize(str);
+                    else
+                    {
+                        mysize = getDirSize(str)+4096;
+                    }
+                }
             }
             else{
                 if(args.isA && S_ISREG(buf.st_mode) ){
                     mysize = getFileSize(str);
                 }
-                else
-                    mysize = getDirSize(str)+4;
+                else{
+
+                    stat(str,&buf);
+                    if(S_ISREG(buf.st_mode))
+                       mysize=getFileSize(str);
+                    else
+                    {
+                        mysize = getDirSize(str)+4;
+                    }
+                }   
             }
 
             snprintf(output, sizeof(output), "%d\t%s\n", mysize, str);
@@ -226,14 +239,28 @@ int getDirSize(char* directory)
 
             if(args.isL){
                 lstat(str,&statbuf);
+                
                 if(S_ISLNK(statbuf.st_mode)){
-                    if(args.isB){
-                        temp=/*statbuf.st_size + */ getDirSize(str)+4096;
-                        size+=temp;
-                    }
-                    else{
-                        temp=statbuf.st_blocks*512/args.size + getDirSize(str)+4;
-                        size+=temp;
+                    stat(str,&statbuf);
+                    if(S_ISDIR(statbuf.st_mode)){
+                        lstat(str,&statbuf);
+                        if(args.isB){
+                            temp=/*statbuf.st_size + */ getDirSize(str)+4096;
+                            size+=temp;
+                        }
+                        else{
+                            temp=statbuf.st_blocks*512/args.size + getDirSize(str)+4;
+                            size+=temp;
+                        }
+                    }else{
+                        if(args.isB){
+                            temp=statbuf.st_size /*+  getFileSize(str)+4096*/;
+                            size+=temp;
+                        }
+                        else{
+                            temp=statbuf.st_blocks*512/args.size /*getFileSize(str)+4*/;
+                            size+=temp;
+                        }
                     }
                 }
                 else {

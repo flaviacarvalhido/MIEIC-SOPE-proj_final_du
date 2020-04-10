@@ -18,6 +18,9 @@
 #define WRITE 1
 
 void sigint_handler(int sigint);
+void sigterm_handler(int sigterm);
+void sigcont_handler(int sigcont);
+void sigstop_handler(int sigstop);
 
 int countSubDirectories(char* directory);
 int countSubDirectoriesRecursive(char* directory);
@@ -34,6 +37,7 @@ struct arg args;
 struct info i;
 struct timeval start;
 int n;
+pid_t parent_pid, child_pid = 0;
 
 int main(int argc, char *argv[], char *envp[]){
     gettimeofday(&start, NULL);
@@ -59,6 +63,10 @@ int main(int argc, char *argv[], char *envp[]){
     //du(args.path);
     int depth=args.depth;
 
+    //signal(SIGINT, sigint_handler);
+
+    parent_pid = getpgrp();
+    signal(SIGINT, sigint_handler);
 
     if(depth!=0){
         du(args.path,depth);
@@ -106,6 +114,17 @@ int du(char * dir, int d){
         pid = fork();
 
         if(pid==0){ //child
+            
+            
+            if (getppid() == parent_pid)
+            {
+                child_pid = getpid();
+            }
+
+            signal(SIGTERM, sigterm_handler);
+            signal(SIGCONT, sigcont_handler);
+            signal(SIGSTOP, sigstop_handler);
+
             close(fd[READ]);
 
             char str[3000];
@@ -192,11 +211,21 @@ int du(char * dir, int d){
         }
         else{  //parent
 
+            if (getpgrp() == parent_pid)
+            {
+                child_pid = pid;
+            }
             pid_t wpid;
+            /*struct sigaction action;
+            action.sa_handler = sigint_handler;
+            sigemptyset(&action.sa_mask);
+            action.sa_flags = 0;*/
+
+            //sigaction(SIGINT,&action,NULL);
+
+
             while ((wpid = wait(&status)) > 0);
-
             
-
 
             close(fd[WRITE]);
             char received_data[1000];
@@ -466,7 +495,29 @@ char ** readSubDirs(char*directory){
 void sigint_handler(int sigint)
 {
     if (sigint == SIGINT)
-    receivedSIGINT = 1;
+        receivedSIGINT = 1;
+    killpg(child_pid, SIGSTOP);
+    if (confirmExit())
+    {
+        kill(0, SIGTERM);
+    }
+    else
+    {
+        kill(0, SIGCONT);
+    }
+}
+
+void sigterm_handler(int sigterm)
+{
+    exit(15);
+}
+
+void sigcont_handler(int sigcont)
+{}
+
+void sigstop_handler(int sigstop)
+{
+    pause();
 }
 
 void resetSIGINT(){

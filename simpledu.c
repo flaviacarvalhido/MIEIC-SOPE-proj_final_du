@@ -8,11 +8,13 @@
 #include <sys/time.h>
 #include <signal.h>
 #include <limits.h>
-#include "log.h"
-#include "structparse.h"
-#include <math.h>
-#include "aux.h"
 #include <sys/wait.h>
+#include <math.h>
+
+#include "structparse.h"
+#include "log.h"
+#include "aux.h"
+
 
 #define READ 0
 #define WRITE 1
@@ -57,13 +59,7 @@ int main(int argc, char *argv[], char *envp[]){
         exit(-1);
     }
 
-
-    //int size=getDirSize("./Test")+4;
-
-    //du(args.path);
     int depth=args.depth;
-
-    //signal(SIGINT, sigint_handler);
 
     parent_pid = getpgrp();
     signal(SIGINT, sigint_handler);
@@ -79,7 +75,6 @@ int main(int argc, char *argv[], char *envp[]){
     else{
         size_parent=getDirSize(args.path)+ceil(4096/args.size);
     }
-    //printf("%d\n",size_parent);
 
     char string_to_log[100];
     snprintf(string_to_log, sizeof(string_to_log), "%d %s\n", size_parent, args.path);
@@ -143,8 +138,6 @@ int du(char * dir, int d, int argc, char *argv[]){
 
             writeLog(getExecTime(), getpid(), CREATE_FORK, info);
 
-            //printf("str=%s\n",str);
-
             lstat(str,&buf);
 
 
@@ -156,7 +149,6 @@ int du(char * dir, int d, int argc, char *argv[]){
                     writeLog(getExecTime(), getpid(), SEND_PIPE, info);
 
                     n=write(fd[WRITE], output, sizeof(output)+1);
-                    //printf("%ld\t%s\n", buf.st_size, str);
                 }
                 else{
                     struct info info;
@@ -164,7 +156,6 @@ int du(char * dir, int d, int argc, char *argv[]){
                     info.sent_from_pipe = output;
                     writeLog(getExecTime(), getpid(), SEND_PIPE, info);
                     n=write(fd[WRITE], output, sizeof(output)+1);
-                    //printf("%ld\t%s\n", buf.st_size/args.size, str);
                 }
             }
 
@@ -206,16 +197,11 @@ int du(char * dir, int d, int argc, char *argv[]){
 
             info.sent_from_pipe = output;
             writeLog(getExecTime(), getpid(), SEND_PIPE, info);
-            //printf("output: %s\n", output);
             n= write(fd[WRITE], output, sizeof(output)+1);
-            //printf("%d\n",n);
-
-            //printf("%d\t%s\n", mysize, str);
+          
 
             close(fd[WRITE]);
 
-
-            //printf("depthfilho:%d\n",d);
             if(countSubDirectories(str)!=0 && d>0){
                 du(str, d, argc, argv);
             }
@@ -229,14 +215,8 @@ int du(char * dir, int d, int argc, char *argv[]){
             {
                 child_pid = pid;
             }
+
             pid_t wpid;
-            /*struct sigaction action;
-            action.sa_handler = sigint_handler;
-            sigemptyset(&action.sa_mask);
-            action.sa_flags = 0;*/
-
-            //sigaction(SIGINT,&action,NULL);
-
             while ((wpid = wait(&status)) > 0);
             
 
@@ -252,9 +232,6 @@ int du(char * dir, int d, int argc, char *argv[]){
             writeLog(getExecTime(), getpid(), RECV_PIPE, info);
             writeLog(getExecTime(), getpid(), ENTRY, info);
 
-
-            //printf("n is %d\n",n);
-            //printf("read returns %d\n",r);
             printf("%s",received_data);
 
             close(fd[READ]);
@@ -267,8 +244,7 @@ int du(char * dir, int d, int argc, char *argv[]){
 // Auxiliary Functions to be placed elsewhere
 
 //always add +4 when called to account for current directory
-int getDirSize(char* directory)
-{
+int getDirSize(char* directory){
     struct stat statbuf;
     DIR *source_dir;
     struct dirent *dentry;
@@ -357,24 +333,19 @@ int getDirSize(char* directory)
                     size+=temp;
                 }
 
-                //printf("%s\n",dentry->d_name);
-                //printf("size=%d\n",size);
-
+                
             }
 
 
         }
 
 
-
-        //printf("%s\n",dentry->d_name);
-        //printf("size=%d\n",size);
     }
 
 
 
 
-return size;
+    return size;
 
 }
 
@@ -512,8 +483,7 @@ char ** readSubDirs(char*directory){
     return vector;
 }
 
-void sigint_handler(int sigint)
-{
+void sigint_handler(int sigint){
     if (sigint == SIGINT)
         receivedSIGINT = 1;
     killpg(child_pid, SIGSTOP);
@@ -527,16 +497,13 @@ void sigint_handler(int sigint)
     }
 }
 
-void sigterm_handler(int sigterm)
-{
+void sigterm_handler(int sigterm){
     exit(15);
 }
 
-void sigcont_handler(int sigcont)
-{}
+void sigcont_handler(int sigcont){}
 
-void sigstop_handler(int sigstop)
-{
+void sigstop_handler(int sigstop){
     pause();
 }
 

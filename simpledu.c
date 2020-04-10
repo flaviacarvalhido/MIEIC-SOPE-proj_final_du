@@ -24,6 +24,7 @@ void simpleduPrototype(char* directory);
 int getDirSize(char* directory);
 int du(char * dir,int d);
 char ** readSubDirs(char*directory);
+int getFileSize(char* file);
 
 int receivedSIGINT;
 struct arg args;
@@ -90,7 +91,6 @@ int du(char * dir, int d){
     struct stat buf;
     d--;
 
-
     for(unsigned int i=0;i<subdir;i++){
 
         pid = fork();
@@ -110,14 +110,30 @@ int du(char * dir, int d){
             //printf("str=%s\n",str);
 
             lstat(str,&buf);
+
+            if(!args.isL && S_ISLNK(buf.st_mode) && args.isA){
+                if(args.isB)
+                    printf("%ld\t%s\n", buf.st_size, str);
+                else
+                    printf("%ld\t%s\n", buf.st_size/args.size, str);
+            }
+
             if(!args.isL && S_ISLNK(buf.st_mode)){
                 exit(2);
             }
 
             int mysize;
             if(args.isB){
+                if(args.isA && S_ISREG(buf.st_mode) )
+                mysize = getFileSize(str);
+                else
                 mysize = getDirSize(str)+4096;
-            }else{
+            }
+            else{
+                if(args.isA && S_ISREG(buf.st_mode) ){
+                    mysize = getFileSize(str);
+                }
+                else
                 mysize = getDirSize(str)+4;
             }
 
@@ -177,49 +193,65 @@ int getDirSize(char* directory)
                     size+=temp;
                 }
 
-                /*
-                if(args.isA){
-                char string_to_log[100];
-                snprintf(string_to_log, sizeof(string_to_log), "%d\t%s\n", temp, str);
-                i.entry = string_to_log;
-                writeLog(getExecTime(), getpid(), ENTRY, i);
-                printf("%d\t%s\n", temp, str);
+                //printf("%s\n",dentry->d_name);
+                //printf("size=%d\n",size);
+
             }
-            */
-
-            //printf("%s\n",dentry->d_name);
-            //printf("size=%d\n",size);
-
         }
-    }
-    else
-    {
-        strcpy(str,directory);
-        strcat(str,"/");
-        strcat(str,dentry->d_name);
-
-        if(args.isL)
-        stat(str,&statbuf);
         else
-        lstat(str,&statbuf);
+        {
+            strcpy(str,directory);
+            strcat(str,"/");
+            strcat(str,dentry->d_name);
 
-        int temp = 0;
-        if(args.isB){
-            temp=statbuf.st_size;
-            size+=temp;
-        }else{
-            temp=statbuf.st_blocks*512/args.size;
-            size+=temp;
-        }
+            int temp = 0;
 
+            if(args.isL){
+                lstat(str,&statbuf);
+                if(S_ISLNK(statbuf.st_mode)){
+                    if(args.isB){
+                        temp=statbuf.st_size + getDirSize(str)+4096;
+                        size+=temp;
+                    }
+                    else{
+                        temp=statbuf.st_blocks*512/args.size + getDirSize(str)+4;
+                        size+=temp;
+                    }
+                }
+                else {
+                    if(args.isB){
+                        temp=statbuf.st_size;
+                        size+=temp;
+                    }
+                    else{
+                        temp=statbuf.st_blocks*512/args.size;
+                        size+=temp;
+                    }
+                }
+            }
 
-        if(args.isA){
+            else{
+                lstat(str,&statbuf);
+                if(args.isB){
+                    temp=statbuf.st_size;
+                    size+=temp;
+                }
+                else{
+                    temp=statbuf.st_blocks*512/args.size;
+                    size+=temp;
+                }
+            }
+
+            /*
+            if(args.isA){
             char string_to_log[100];
             snprintf(string_to_log, sizeof(string_to_log), "%d\t%s\n", temp, str);
             i.entry = string_to_log;
             writeLog(getExecTime(), getpid(), ENTRY, i);
             printf("%d\t%s\n", temp, str);
         }
+        */
+
 
         //printf("%s\n",dentry->d_name);
         //printf("size=%d\n",size);
@@ -268,8 +300,13 @@ int countSubDirectories(char* directory){
             continue;
         }
 
+
         if(S_ISDIR(statbuf.st_mode))
         counter++;
+
+        if(args.isA && S_ISREG(statbuf.st_mode))
+        counter++;
+
     }
 
     closedir(source_dir);
@@ -351,6 +388,12 @@ char ** readSubDirs(char*directory){
             vector[index]=dentry->d_name;
             index++;
         }
+
+        if(S_ISREG(statbuf.st_mode) && args.isA){
+            vector[index]=dentry->d_name;
+            index++;
+        }
+
     }
     return vector;
 }
@@ -363,4 +406,14 @@ void sigint_handler(int sigint)
 
 void resetSIGINT(){
     receivedSIGINT = 0;
+}
+
+int getFileSize(char* file){
+    struct stat statbuf;
+    stat(file, &statbuf);
+
+    if(args.isB)
+    return statbuf.st_size;
+    else
+    return statbuf.st_blocks*512/args.size;
 }

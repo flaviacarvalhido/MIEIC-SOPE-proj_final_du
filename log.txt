@@ -1,8 +1,2 @@
-97.00 - 18541 - CREATE - ./simpledu Test -a -l 
-436.00 - 18543 - ENTRY - 44	Test/Test2/Test2.1/teste.txt
-913.00 - 18545 - ENTRY - 44	Test/Test2/Test2.1/teste.txt
-1243.00 - 18546 - ENTRY - 68	Test/Test1/cenas.txt
-2069.00 - 18541 - ENTRY - 52	Test/boas.txt
-2116.00 - 18541 - ENTRY - 44	Test/Test2/Test2.1/teste.txt
-2137.00 - 18541 - ENTRY - 68	Test/Test1/cenas.txt
-2161.00 - 18541 - ENTRY - 196	Test
+281.00 - 5201 - CREATE - ./simpledu -l -a Test 
+7174.00 - 5201 - ENTRY - 184	Test

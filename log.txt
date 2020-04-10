@@ -1,2 +1,9 @@
+<<<<<<< HEAD
 200.00 - 29562 - CREATE - ./simpledu -l /home/flavia/Desktop 
 190000.00 - 29562 - ENTRY - 5268	/home/flavia/Desktop
+=======
+<<<<<<< HEAD
+=======
+167.00 - 3642 - CREATE - ./simpledu -l Test 
+>>>>>>> 47fddbbe440c78bfc160f819ed71232a9a360877
+>>>>>>> 9572cfbfeed4a5d20aaf2c14963eca3a2ec823a8

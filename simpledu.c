@@ -111,8 +111,8 @@ int du(char * dir, int d, int argc, char *argv[]){
         pid = fork();
 
         if(pid==0){ //child
-            
-            
+
+
             if (getppid() == parent_pid)
             {
                 child_pid = getpid();
@@ -239,7 +239,7 @@ int du(char * dir, int d, int argc, char *argv[]){
 
 
             while ((wpid = wait(&status)) > 0);
-            
+
 
             close(fd[WRITE]);
             char received_data[1000];
@@ -517,27 +517,48 @@ void sigint_handler(int sigint)
 {
     if (sigint == SIGINT)
         receivedSIGINT = 1;
+
+    struct info info;
+    info.recv_signal = "SIGINT";
+    writeLog(getExecTime(), getpid(), RECV_SIGNAL, info);
+
+    info.sent_signal = "SIGSTOP";
+    writeLog(getExecTime(), getpid(), SEND_SIGNAL, info);
     killpg(child_pid, SIGSTOP);
     if (confirmExit())
     {
+        info.sent_signal = "SIGTERM";
+        writeLog(getExecTime(), getpid(), SEND_SIGNAL, info);
         kill(0, SIGTERM);
     }
     else
     {
+        info.sent_signal = "SIGCONT";
+        writeLog(getExecTime(), getpid(), SEND_SIGNAL, info);
         kill(0, SIGCONT);
     }
 }
 
 void sigterm_handler(int sigterm)
 {
+    struct info info;
+    info.recv_signal = "SIGTERM";
+    writeLog(getExecTime(), getpid(), RECV_SIGNAL, info);
     exit(15);
 }
 
 void sigcont_handler(int sigcont)
-{}
+{
+    struct info info;
+    info.recv_signal = "SIGCONT";
+    writeLog(getExecTime(), getpid(), RECV_SIGNAL, info);
+}
 
 void sigstop_handler(int sigstop)
 {
+    struct info info;
+    info.recv_signal = "SIGSTOP";
+    writeLog(getExecTime(), getpid(), RECV_SIGNAL, info);
     pause();
 }
 

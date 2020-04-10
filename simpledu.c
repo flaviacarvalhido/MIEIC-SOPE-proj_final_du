@@ -107,7 +107,6 @@ int du(char * dir, int d, int argc, char *argv[]){
 
         if(pid==0){ //child
 
-
             if (getppid() == parent_pid)
             {
                 child_pid = getpid();
@@ -152,7 +151,7 @@ int du(char * dir, int d, int argc, char *argv[]){
                 }
                 else{
                     struct info info;
-                    snprintf(output, sizeof(output), "%fd\t%s\n", ceil(buf.st_blocks*512/args.size), str);
+                    snprintf(output, sizeof(output), "%d\t%s\n", (int)ceil(buf.st_blocks*512/args.size), str);
                     info.sent_from_pipe = output;
                     writeLog(getExecTime(), getpid(), SEND_PIPE, info);
                     n=write(fd[WRITE], output, sizeof(output)+1);
@@ -210,11 +209,12 @@ int du(char * dir, int d, int argc, char *argv[]){
 
         }
         else{  //parent
-
             if (getpgrp() == parent_pid)
             {
                 child_pid = pid;
             }
+
+            sleep(2);
 
             pid_t wpid;
             while ((wpid = wait(&status)) > 0);
@@ -229,11 +229,13 @@ int du(char * dir, int d, int argc, char *argv[]){
             struct info info;
             info.received_from_pipe = received_data;
             info.entry = received_data;
-            writeLog(getExecTime(), getpid(), RECV_PIPE, info);
-            writeLog(getExecTime(), getpid(), ENTRY, info);
 
-            printf("%s",received_data);
+            if(strcmp(received_data, "\n")!=0 && strcmp(received_data, "\t")!=0){
+                writeLog(getExecTime(), getpid(), RECV_PIPE, info);
+                writeLog(getExecTime(), getpid(), ENTRY, info);
 
+                printf("%s",received_data);
+            }
             close(fd[READ]);
         }
     }
@@ -270,20 +272,20 @@ int getDirSize(char* directory){
                     if(S_ISDIR(statbuf.st_mode)){
                         lstat(str,&statbuf);
                         if(args.isB){
-                            temp=/*statbuf.st_size + */ getDirSize(str)+4096;
+                            temp=getDirSize(str)+4096;
                             size+=temp;
                         }
                         else{
-                            temp=ceil(statbuf.st_blocks*512/args.size) + getDirSize(str)+ceil(4096/args.size);
+                            temp=ceil(statbuf.st_blocks*512/args.size) + getDirSize(str) + ceil(4096/args.size);
                             size+=temp;
                         }
                     }else{
                         if(args.isB){
-                            temp=statbuf.st_size /*+  getFileSize(str)+4096*/;
+                            temp=statbuf.st_size;
                             size+=temp;
                         }
                         else{
-                            temp=ceil(statbuf.st_blocks*512/args.size) /*getFileSize(str)+4*/;
+                            temp=ceil(statbuf.st_blocks*512/args.size);
                             size+=temp;
                         }
                     }
@@ -302,6 +304,12 @@ int getDirSize(char* directory){
 
             else{
                 lstat(str,&statbuf);
+                // printf("STR: %s\n", str);
+                // printf("IS LNK: %d\n", S_ISLNK(statbuf.st_mode));
+                // printf("IS DIR: %d\n", S_ISDIR(statbuf.st_mode));
+                // printf("IS REG: %d\n", S_ISREG(statbuf.st_mode));
+
+
                 if(args.isB){
                     temp=statbuf.st_size;
                     size+=temp;
@@ -314,8 +322,6 @@ int getDirSize(char* directory){
         }
         else
         {
-
-
             if( (strcmp(dentry->d_name,"..")!=0)  && !args.isS && (strlen(dentry->d_name)>1 && !args.isS) )
             {
 
@@ -328,22 +334,15 @@ int getDirSize(char* directory){
                 if(args.isB){
                     temp=statbuf.st_size + getDirSize(str);
                     size+=temp;
-                }else{
+                }
+                else{
                     temp=ceil(statbuf.st_blocks*512/args.size) + getDirSize(str);
                     size+=temp;
                 }
 
-
             }
-
-
         }
-
-
     }
-
-
-
 
     return size;
 

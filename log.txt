@@ -1,6 +1,5 @@
-443.00 - 17677 - CREATE - ./simpledu --count-links -a Test 
-4061.00 - 17682 - ENTRY - 68	Test/Test1/cenas.txt
-5723.00 - 17677 - ENTRY - 52	Test/boas.txt
-5898.00 - 17677 - ENTRY - 68	Test/Test1/cenas.txt
-5973.00 - 17677 - ENTRY - 4	Test/link.txt
-6001.00 - 17677 - ENTRY - 156	Test
+317.00 - 18808 - CREATE - ./simpledu -l Test -a 
+4620.00 - 18814 - ENTRY - 68	Test/Test1/cenas.txt
+7042.00 - 18808 - ENTRY - 52	Test/boas.txt
+7307.00 - 18808 - ENTRY - 68	Test/Test1/cenas.txt
+7407.00 - 18808 - ENTRY - 152	Test

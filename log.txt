@@ -1,2 +1,2 @@
-189.00 - 28427 - CREATE - ./simpledu -l Test -L -a 
-11928.00 - 28427 - ENTRY - 380	Test
+200.00 - 29562 - CREATE - ./simpledu -l /home/flavia/Desktop 
+190000.00 - 29562 - ENTRY - 5268	/home/flavia/Desktop

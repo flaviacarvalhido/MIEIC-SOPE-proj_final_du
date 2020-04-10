@@ -30,12 +30,10 @@ struct arg parser(int argc, char *argv[]){
 
         if(strcmp(argv[i],"-a")==0 || strcmp(argv[i],"--all")==0){
             args.isA=true;
-            //printf("yes I work -a\n");
             continue;
         }
         if(strcmp(argv[i],"-b")==0 || strcmp(argv[i],"--bytes")==0){
             args.isB=true;
-            //printf("yes I work -b\n");
             continue;
         }
 
@@ -46,16 +44,11 @@ struct arg parser(int argc, char *argv[]){
 
             if(atoi(argv[i])){
                 args.size=atoi(argv[i]);
-                //printf("i worked\n");
             }else{
                 args.error=true;
-                //printf("error\n");
                 return args;
             }
 
-
-            //printf("yes I work -B\n");
-            //printf("size: %d",args.size);
             continue;
         }
         //another argument for -B size
@@ -66,25 +59,19 @@ struct arg parser(int argc, char *argv[]){
 
             if(atoi(temp)){
                 args.size=atoi(temp);
-                //printf("i worked\n");
             }else{
                 args.error=true;
-                //printf("error\n");
                 return args;
             }
-            //printf("yes I work --max\n");
-            //printf("depth: %d\n",args.depth);
             continue;
         }
 
         if(strcmp(argv[i],"-L")==0 || strcmp(argv[i],"--dereference")==0){
             args.isL=true;
-            //printf("yes I work -L\n");
             continue;
         }
         if(strcmp(argv[i],"-S")==0 || strcmp(argv[i],"--separate-dirs")==0){
             args.isS=true;
-            //printf("yes I work -S\n");
             continue;
         }
         if(strstr(argv[i], "--max-depth=") != NULL){
@@ -94,14 +81,10 @@ struct arg parser(int argc, char *argv[]){
 
             if(atoi(temp) || strcmp(temp,"0") == 0){
                 args.depth=atoi(temp);
-                //printf("i worked\n");
             }else{
                 args.error=true;
-                //printf("error\n");
                 return args;
             }
-            //printf("yes I work --max\n");
-            //printf("depth: %d\n",args.depth);
             continue;
         }
 
@@ -117,13 +100,10 @@ struct arg parser(int argc, char *argv[]){
             return args;
         }
 
-        //printf("path is : %s",args.path);
-
     }
 
     if(!args.isPath){
         args.path=".";
-        //printf("path is current\n");
     }
 
     if(!args.isBSize){

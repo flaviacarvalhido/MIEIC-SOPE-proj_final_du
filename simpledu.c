@@ -8,11 +8,13 @@
 #include <sys/time.h>
 #include <signal.h>
 #include <limits.h>
-#include "log.h"
-#include "structparse.h"
-#include <math.h>
-#include "aux.h"
 #include <sys/wait.h>
+#include <math.h>
+
+#include "structparse.h"
+#include "log.h"
+#include "aux.h"
+
 
 #define READ 0
 #define WRITE 1
@@ -57,13 +59,7 @@ int main(int argc, char *argv[], char *envp[]){
         exit(-1);
     }
 
-
-    //int size=getDirSize("./Test")+4;
-
-    //du(args.path);
     int depth=args.depth;
-
-    //signal(SIGINT, sigint_handler);
 
     parent_pid = getpgrp();
     signal(SIGINT, sigint_handler);
@@ -77,9 +73,8 @@ int main(int argc, char *argv[], char *envp[]){
         size_parent=getDirSize(args.path)+4096;
     }
     else{
-        size_parent=getDirSize(args.path)+4;
+        size_parent=getDirSize(args.path)+ceil(4096/args.size);
     }
-    //printf("%d\n",size_parent);
 
     char string_to_log[100];
     snprintf(string_to_log, sizeof(string_to_log), "%d %s\n", size_parent, args.path);
@@ -143,8 +138,6 @@ int du(char * dir, int d, int argc, char *argv[]){
 
             writeLog(getExecTime(), getpid(), CREATE_FORK, info);
 
-            //printf("str=%s\n",str);
-
             lstat(str,&buf);
 
 
@@ -156,15 +149,13 @@ int du(char * dir, int d, int argc, char *argv[]){
                     writeLog(getExecTime(), getpid(), SEND_PIPE, info);
 
                     n=write(fd[WRITE], output, sizeof(output)+1);
-                    //printf("%ld\t%s\n", buf.st_size, str);
                 }
                 else{
                     struct info info;
-                    snprintf(output, sizeof(output), "%ld\t%s\n", buf.st_size/args.size, str);
+                    snprintf(output, sizeof(output), "%fd\t%s\n", ceil(buf.st_blocks*512/args.size), str);
                     info.sent_from_pipe = output;
                     writeLog(getExecTime(), getpid(), SEND_PIPE, info);
                     n=write(fd[WRITE], output, sizeof(output)+1);
-                    //printf("%ld\t%s\n", buf.st_size/args.size, str);
                 }
             }
 
@@ -197,7 +188,7 @@ int du(char * dir, int d, int argc, char *argv[]){
                        mysize=getFileSize(str);
                     else
                     {
-                        mysize = getDirSize(str)+4;
+                        mysize = getDirSize(str)+ceil(4096/args.size);
                     }
                 }
             }
@@ -206,16 +197,11 @@ int du(char * dir, int d, int argc, char *argv[]){
 
             info.sent_from_pipe = output;
             writeLog(getExecTime(), getpid(), SEND_PIPE, info);
-            //printf("output: %s\n", output);
             n= write(fd[WRITE], output, sizeof(output)+1);
-            //printf("%d\n",n);
-
-            //printf("%d\t%s\n", mysize, str);
+          
 
             close(fd[WRITE]);
 
-
-            //printf("depthfilho:%d\n",d);
             if(countSubDirectories(str)!=0 && d>0){
                 du(str, d, argc, argv);
             }
@@ -229,15 +215,8 @@ int du(char * dir, int d, int argc, char *argv[]){
             {
                 child_pid = pid;
             }
+
             pid_t wpid;
-            /*struct sigaction action;
-            action.sa_handler = sigint_handler;
-            sigemptyset(&action.sa_mask);
-            action.sa_flags = 0;*/
-
-            //sigaction(SIGINT,&action,NULL);
-
-
             while ((wpid = wait(&status)) > 0);
 
 
@@ -253,9 +232,6 @@ int du(char * dir, int d, int argc, char *argv[]){
             writeLog(getExecTime(), getpid(), RECV_PIPE, info);
             writeLog(getExecTime(), getpid(), ENTRY, info);
 
-
-            //printf("n is %d\n",n);
-            //printf("read returns %d\n",r);
             printf("%s",received_data);
 
             close(fd[READ]);
@@ -268,8 +244,7 @@ int du(char * dir, int d, int argc, char *argv[]){
 // Auxiliary Functions to be placed elsewhere
 
 //always add +4 when called to account for current directory
-int getDirSize(char* directory)
-{
+int getDirSize(char* directory){
     struct stat statbuf;
     DIR *source_dir;
     struct dirent *dentry;
@@ -299,7 +274,7 @@ int getDirSize(char* directory)
                             size+=temp;
                         }
                         else{
-                            temp=statbuf.st_blocks*512/args.size + getDirSize(str)+4;
+                            temp=ceil(statbuf.st_blocks*512/args.size) + getDirSize(str)+ceil(4096/args.size);
                             size+=temp;
                         }
                     }else{
@@ -308,7 +283,7 @@ int getDirSize(char* directory)
                             size+=temp;
                         }
                         else{
-                            temp=statbuf.st_blocks*512/args.size /*getFileSize(str)+4*/;
+                            temp=ceil(statbuf.st_blocks*512/args.size) /*getFileSize(str)+4*/;
                             size+=temp;
                         }
                     }
@@ -319,7 +294,7 @@ int getDirSize(char* directory)
                         size+=temp;
                     }
                     else{
-                        temp=statbuf.st_blocks*512/args.size;
+                        temp=ceil(statbuf.st_blocks*512/args.size);
                         size+=temp;
                     }
                 }
@@ -332,7 +307,7 @@ int getDirSize(char* directory)
                     size+=temp;
                 }
                 else{
-                    temp=statbuf.st_blocks*512/args.size;
+                    temp=ceil(statbuf.st_blocks*512/args.size);
                     size+=temp;
                 }
             }
@@ -354,28 +329,23 @@ int getDirSize(char* directory)
                     temp=statbuf.st_size + getDirSize(str);
                     size+=temp;
                 }else{
-                    temp=statbuf.st_blocks*512/args.size + getDirSize(str);
+                    temp=ceil(statbuf.st_blocks*512/args.size) + getDirSize(str);
                     size+=temp;
                 }
 
-                //printf("%s\n",dentry->d_name);
-                //printf("size=%d\n",size);
-
+                
             }
 
 
         }
 
 
-
-        //printf("%s\n",dentry->d_name);
-        //printf("size=%d\n",size);
     }
 
 
 
 
-return size;
+    return size;
 
 }
 
@@ -513,8 +483,7 @@ char ** readSubDirs(char*directory){
     return vector;
 }
 
-void sigint_handler(int sigint)
-{
+void sigint_handler(int sigint){
     if (sigint == SIGINT)
         receivedSIGINT = 1;
 
@@ -539,6 +508,7 @@ void sigint_handler(int sigint)
     }
 }
 
+<<<<<<< HEAD
 void sigterm_handler(int sigterm)
 {
     struct info info;
@@ -559,6 +529,15 @@ void sigstop_handler(int sigstop)
     struct info info;
     info.recv_signal = "SIGSTOP";
     writeLog(getExecTime(), getpid(), RECV_SIGNAL, info);
+=======
+void sigterm_handler(int sigterm){
+    exit(15);
+}
+
+void sigcont_handler(int sigcont){}
+
+void sigstop_handler(int sigstop){
+>>>>>>> 5288d76bd0bb85807afc65c662132c4568be3d15
     pause();
 }
 
@@ -573,5 +552,5 @@ int getFileSize(char* file){
     if(args.isB)
     return statbuf.st_size;
     else
-    return statbuf.st_blocks*512/args.size;
+    return ceil(statbuf.st_blocks*512/args.size);
 }

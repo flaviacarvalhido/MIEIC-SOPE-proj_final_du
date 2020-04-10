@@ -213,10 +213,10 @@ int du(char * dir, int d, int argc, char *argv[]){
             {
                 child_pid = pid;
             }
-            sleep(2);
+            //sleep(2);
             pid_t wpid;
             while ((wpid = wait(&status)) > 0);
-            
+
             close(fd[WRITE]);
             char received_data[1000];
 

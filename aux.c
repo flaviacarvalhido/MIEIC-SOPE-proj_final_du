@@ -10,6 +10,8 @@ double getExecTime(){
 int confirmExit(){
     char response[50];
     response[0] = '\0';
+    sleep(1);
+
     do {
         printf("\nDo you wish to terminate the program? (Yes/No)\n");
         scanf("%s", response);

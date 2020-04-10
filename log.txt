@@ -1,28 +1,42 @@
-176.00 - 7602 - CREATE - ./simpledu Test -l 
-493.00 - 7603 - CREATE - Test/Test1 Test -l 
-666.00 - 7603 - SEND_PIPE - 12	Test/Test1
-1009.00 - 7604 - CREATE - Test/Test1/Test1.1 Test -l 
-1177.00 - 7604 - SEND_PIPE - 8	Test/Test1/Test1.1
-2000968.00 - 7603 - RECV_PIPE - 8	Test/Test1/Test1.1
-2001014.00 - 7603 - ENTRY - 8	Test/Test1/Test1.1
-2001215.00 - 7602 - RECV_PIPE - 12	Test/Test1
-2001236.00 - 7602 - ENTRY - 12	Test/Test1
-2001364.00 - 7605 - CREATE - Test/Test5 Test -l 
-2001425.00 - 7605 - SEND_PIPE - 4	Test/Test5
-2001554.00 - 7606 - CREATE - Test/Test5/1 Test -l 
-2001622.00 - 7606 - SEND_PIPE - 4	Test/Test5/1
-2001748.00 - 7607 - CREATE - Test/Test5/1/w Test -l 
-2001805.00 - 7607 - SEND_PIPE - 4	Test/Test5/1/w
-2002090.00 - 7608 - CREATE - Test/Test5/1/w/d Test -l 
-2002165.00 - 7608 - SEND_PIPE - 4	Test/Test5/1/w/d
-2002321.00 - 7609 - CREATE - Test/Test5/1/w/d/a Test -l 
-2002377.00 - 7609 - SEND_PIPE - 4	Test/Test5/1/w/d/a
-2797439.00 - 7608 - RECV_PIPE - 4	Test/Test5/1/w/d/a
-2797430.00 - 7602 - RECV_SIGNAL - SIGINT2797493.00 - 7608 - ENTRY - 4	Test/Test5/1/w/d/a
-2797502.00 - 7602 - SEND_SIGNAL - SIGSTOP2797738.00 - 7607 - RECV_PIPE - 4	Test/Test5/1/w/d
-2797772.00 - 7607 - ENTRY - 4	Test/Test5/1/w/d
-2797984.00 - 7606 - RECV_PIPE - 4	Test/Test5/1/w
-2798010.00 - 7606 - ENTRY - 4	Test/Test5/1/w
-2798278.00 - 7605 - RECV_PIPE - 4	Test/Test5/1
-2798311.00 - 7605 - ENTRY - 4	Test/Test5/1
-34955905.00 - 7602 - SEND_SIGNAL - SIGTERM
+182.00 - 5310 - CREATE - ./simpledu -l Test -a -L -b 
+546.00 - 5311 - CREATE - Test/Test3 -l Test -a -L -b 
+806.00 - 5311 - SEND_PIPE - 10443	Test/Test3
+1175.00 - 5312 - CREATE - Test/Test3/Test3.1 -l Test -a -L -b 
+1351.00 - 5312 - SEND_PIPE - 6347	Test/Test3/Test3.1
+1679.00 - 5313 - CREATE - Test/Test3/Test3.1/cenas.txt -l Test -a -L -b 
+1792.00 - 5313 - SEND_PIPE - 2251	Test/Test3/Test3.1/cenas.txt
+2033.00 - 5312 - RECV_PIPE - 2251	Test/Test3/Test3.1/cenas.txt
+2073.00 - 5312 - ENTRY - 2251	Test/Test3/Test3.1/cenas.txt
+2416.00 - 5311 - RECV_PIPE - 6347	Test/Test3/Test3.1
+2468.00 - 5311 - ENTRY - 6347	Test/Test3/Test3.1
+2744.00 - 5310 - RECV_PIPE - 10443	Test/Test3
+2802.00 - 5310 - ENTRY - 10443	Test/Test3
+3115.00 - 5314 - CREATE - Test/Test5 -l Test -a -L -b 
+3276.00 - 5314 - SEND_PIPE - 4096	Test/Test5
+3526.00 - 5310 - RECV_PIPE - 4096	Test/Test5
+3568.00 - 5310 - ENTRY - 4096	Test/Test5
+3813.00 - 5315 - CREATE - Test/Test1 -l Test -a -L -b 
+4042.00 - 5315 - SEND_PIPE - 10443	Test/Test1
+4408.00 - 5316 - CREATE - Test/Test1/Test1.1 -l Test -a -L -b 
+4562.00 - 5316 - SEND_PIPE - 6347	Test/Test1/Test1.1
+4792.00 - 5317 - CREATE - Test/Test1/Test1.1/abc.txt -l Test -a -L -b 
+4869.00 - 5317 - SEND_PIPE - 2251	Test/Test1/Test1.1/abc.txt
+5065.00 - 5316 - RECV_PIPE - 2251	Test/Test1/Test1.1/abc.txt
+5105.00 - 5316 - ENTRY - 2251	Test/Test1/Test1.1/abc.txt
+5362.00 - 5315 - RECV_PIPE - 6347	Test/Test1/Test1.1
+5408.00 - 5315 - ENTRY - 6347	Test/Test1/Test1.1
+5695.00 - 5310 - RECV_PIPE - 10443	Test/Test1
+5736.00 - 5310 - ENTRY - 10443	Test/Test1
+5989.00 - 5318 - CREATE - Test/Test2 -l Test -a -L -b 
+6186.00 - 5318 - SEND_PIPE - 12288	Test/Test2
+6500.00 - 5319 - CREATE - Test/Test2/Test2.1 -l Test -a -L -b 
+6677.00 - 5319 - SEND_PIPE - 8192	Test/Test2/Test2.1
+6990.00 - 5320 - CREATE - Test/Test2/Test2.1/Test2.1.1 -l Test -a -L -b 
+7141.00 - 5320 - SEND_PIPE - 4096	Test/Test2/Test2.1/Test2.1.1
+7391.00 - 5319 - RECV_PIPE - 4096	Test/Test2/Test2.1/Test2.1.1
+7424.00 - 5319 - ENTRY - 4096	Test/Test2/Test2.1/Test2.1.1
+7665.00 - 5318 - RECV_PIPE - 8192	Test/Test2/Test2.1
+7702.00 - 5318 - ENTRY - 8192	Test/Test2/Test2.1
+7921.00 - 5310 - RECV_PIPE - 12288	Test/Test2
+7962.00 - 5310 - ENTRY - 12288	Test/Test2
+8219.00 - 5310 - ENTRY - 41366 Test

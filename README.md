@@ -12,7 +12,7 @@ Se a variável ambiente LOG_FILENAME não estiver definida, o ficheiro de texto 
 
 Tal como no du, caso o caminho para onde o simpledu deve correr não for especificado, o caminho por omissão é o ".", ou seja, a pasta onde o utilizador se encontra naquele momento. 
 
-## Implentações
+## Implementações
 
 Na opção -B (ou --block-size=SIZE), no caso do tamanho especificado não for potência de 2, ocorrem algumas falhas no tamanho apresentado.
 
